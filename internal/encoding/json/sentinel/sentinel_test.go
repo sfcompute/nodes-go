@@ -1,8 +1,8 @@
 package sentinel_test
 
 import (
-	"github.com/stainless-sdks/sfc-nodes-go/internal/encoding/json/sentinel"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/internal/encoding/json/sentinel"
+	"github.com/sfcompute/nodes-go/packages/param"
 	"reflect"
 	"slices"
 	"testing"

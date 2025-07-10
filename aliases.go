@@ -3,8 +3,8 @@
 package sfcnodes
 
 import (
-	"github.com/stainless-sdks/sfc-nodes-go/internal/apierror"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/internal/apierror"
+	"github.com/sfcompute/nodes-go/packages/param"
 )
 
 // aliased to make [param.APIUnion] private when embedding
