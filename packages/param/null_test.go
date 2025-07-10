@@ -2,7 +2,7 @@ package param_test
 
 import (
 	"encoding/json"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/packages/param"
 	"testing"
 )
 

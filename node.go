@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stainless-sdks/sfc-nodes-go/internal/apijson"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/requestconfig"
-	"github.com/stainless-sdks/sfc-nodes-go/option"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/respjson"
+	"github.com/sfcompute/nodes-go/internal/apijson"
+	"github.com/sfcompute/nodes-go/internal/requestconfig"
+	"github.com/sfcompute/nodes-go/option"
+	"github.com/sfcompute/nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
 // NodeService contains methods and other services that help with interacting with

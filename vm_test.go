@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/sfc-nodes-go"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/testutil"
-	"github.com/stainless-sdks/sfc-nodes-go/option"
+	"github.com/sfcompute/nodes-go"
+	"github.com/sfcompute/nodes-go/internal/testutil"
+	"github.com/sfcompute/nodes-go/option"
 )
 
 func TestVmList(t *testing.T) {

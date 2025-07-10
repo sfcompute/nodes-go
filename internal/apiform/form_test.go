@@ -2,7 +2,7 @@ package apiform
 
 import (
 	"bytes"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/packages/param"
 	"io"
 	"mime/multipart"
 	"strings"

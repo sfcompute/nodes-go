@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/sfc-nodes-go
+module github.com/sfcompute/nodes-go
 
 go 1.21
 

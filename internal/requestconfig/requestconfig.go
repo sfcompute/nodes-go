@@ -18,10 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/sfc-nodes-go/internal"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/apierror"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/apiform"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/apiquery"
+	"github.com/sfcompute/nodes-go/internal"
+	"github.com/sfcompute/nodes-go/internal/apierror"
+	"github.com/sfcompute/nodes-go/internal/apiform"
+	"github.com/sfcompute/nodes-go/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {

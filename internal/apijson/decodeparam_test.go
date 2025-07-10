@@ -3,8 +3,8 @@ package apijson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/apijson"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/internal/apijson"
+	"github.com/sfcompute/nodes-go/packages/param"
 	"reflect"
 	"testing"
 )
