@@ -24,7 +24,7 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 	}
 	client := sfcnodes.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Nodes.New(context.TODO(), sfcnodes.NodeNewParams{
 		DesiredCount:    1,
@@ -55,7 +55,7 @@ func TestNodeList(t *testing.T) {
 	}
 	client := sfcnodes.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Nodes.List(context.TODO())
 	if err != nil {
@@ -78,7 +78,7 @@ func TestNodeExtend(t *testing.T) {
 	}
 	client := sfcnodes.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Nodes.Extend(
 		context.TODO(),
@@ -108,7 +108,7 @@ func TestNodeRelease(t *testing.T) {
 	}
 	client := sfcnodes.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Nodes.Release(
 		context.TODO(),

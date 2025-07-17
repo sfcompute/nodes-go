@@ -22,7 +22,7 @@ func TestUsage(t *testing.T) {
 	}
 	client := sfcnodes.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	nodes, err := client.Nodes.List(context.TODO())
 	if err != nil {
