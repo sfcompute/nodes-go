@@ -20,23 +20,23 @@ type Client struct {
 	Nodes   NodeService
 }
 
-// DefaultClientOptions read from the environment (SFC_BEARER_TOKEN,
+// DefaultClientOptions read from the environment (SFC_API_KEY,
 // SFC_NODES_BASE_URL). This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("SFC_NODES_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
-	if o, ok := os.LookupEnv("SFC_BEARER_TOKEN"); ok {
-		defaults = append(defaults, option.WithBearerToken(o))
+	if o, ok := os.LookupEnv("SFC_API_KEY"); ok {
+		defaults = append(defaults, option.WithAPIKey(o))
 	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (SFC_BEARER_TOKEN, SFC_NODES_BASE_URL). The option passed in as
-// arguments are applied after these default arguments, and all option will be
-// passed down to the services and requests that this client makes.
+// environment (SFC_API_KEY, SFC_NODES_BASE_URL). The option passed in as arguments
+// are applied after these default arguments, and all option will be passed down to
+// the services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 

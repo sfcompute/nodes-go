@@ -24,7 +24,7 @@ func TestVmScriptNew(t *testing.T) {
 	}
 	client := sfcnodes.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Vms.Script.New(context.TODO(), sfcnodes.VmScriptNewParams{
 		Script: sfcnodes.UserDataUnionParam{
@@ -51,7 +51,7 @@ func TestVmScriptGet(t *testing.T) {
 	}
 	client := sfcnodes.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithBearerToken("My Bearer Token"),
+		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Vms.Script.Get(context.TODO())
 	if err != nil {
