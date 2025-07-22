@@ -81,11 +81,9 @@ type Node struct {
 	// Any of "H100", "H200".
 	GPUType NodeGPUType `json:"gpu_type,required"`
 	Name    string      `json:"name,required"`
-	Node    string      `json:"node,required"`
-	// Any of "OnDemand", "Reserved".
+	// Any of "on_demand", "reserved".
 	NodeType NodeType `json:"node_type,required"`
 	Owner    string   `json:"owner,required"`
-	StartAt  int64    `json:"start_at,required"`
 	// Any of "Pending", "Running", "Terminated", "Failed", "Unknown".
 	Status          NodeStatus `json:"status,required"`
 	CreatedAt       int64      `json:"created_at,nullable"`
@@ -94,28 +92,26 @@ type Node struct {
 	ProcurementID   string     `json:"procurement_id,nullable"`
 	// Any of "Uninitialized", "Active", "Ended", "AwaitingCapacity".
 	ProcurementStatus NodeProcurementStatus `json:"procurement_status,nullable"`
+	StartAt           int64                 `json:"start_at,nullable"`
 	UpdatedAt         int64                 `json:"updated_at,nullable"`
 	// Possible zones to choose from when creating a node.
 	//
-	// TODO (ENG-1976): Support dynamic zones through an endpoint.
-	//
-	// Any of "HayesValley".
+	// Any of "hayesvalley".
 	Zone NodeZone `json:"zone,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                respjson.Field
 		GPUType           respjson.Field
 		Name              respjson.Field
-		Node              respjson.Field
 		NodeType          respjson.Field
 		Owner             respjson.Field
-		StartAt           respjson.Field
 		Status            respjson.Field
 		CreatedAt         respjson.Field
 		EndAt             respjson.Field
 		MaxPricePerHour   respjson.Field
 		ProcurementID     respjson.Field
 		ProcurementStatus respjson.Field
+		StartAt           respjson.Field
 		UpdatedAt         respjson.Field
 		Zone              respjson.Field
 		ExtraFields       map[string]respjson.Field
@@ -156,19 +152,17 @@ const (
 )
 
 // Possible zones to choose from when creating a node.
-//
-// TODO (ENG-1976): Support dynamic zones through an endpoint.
 type NodeZone string
 
 const (
-	NodeZoneHayesValley NodeZone = "HayesValley"
+	NodeZoneHayesvalley NodeZone = "hayesvalley"
 )
 
 type NodeType string
 
 const (
-	NodeTypeOnDemand NodeType = "OnDemand"
-	NodeTypeReserved NodeType = "Reserved"
+	NodeTypeOnDemand NodeType = "on_demand"
+	NodeTypeReserved NodeType = "reserved"
 )
 
 type UpdateNode struct {
@@ -198,7 +192,7 @@ type NodeNewParams struct {
 	// Custom node names. Names cannot follow the vm*id pattern vm*{16_hex_chars} as
 	// this is reserved for system-generated IDs.
 	Names []string `json:"names,omitzero"`
-	// Any of "OnDemand", "Reserved".
+	// Any of "on_demand", "reserved".
 	NodeType NodeType `json:"node_type,omitzero"`
 	paramObj
 }
