@@ -27,13 +27,13 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Nodes.New(context.TODO(), sfcnodes.NodeNewParams{
-		DesiredCount:    1,
-		MaxPricePerHour: 1000,
-		EndAt:           sfcnodes.Int(1640995200),
-		Names:           []string{"string"},
-		NodeType:        sfcnodes.NodeTypeOnDemand,
-		StartAt:         sfcnodes.Int(1640995200),
-		Zone:            sfcnodes.String("zone"),
+		DesiredCount:        1,
+		MaxPricePerNodeHour: 1000,
+		Zone:                "hayesvalley",
+		EndAt:               sfcnodes.Int(0),
+		Names:               []string{"cuda-crunch"},
+		NodeType:            sfcnodes.NodeTypeOnDemand,
+		StartAt:             sfcnodes.Int(1640995200),
 	})
 	if err != nil {
 		var apierr *sfcnodes.Error
@@ -84,8 +84,8 @@ func TestNodeExtend(t *testing.T) {
 		context.TODO(),
 		"id",
 		sfcnodes.NodeExtendParams{
-			DurationSeconds: 7200,
-			MaxPricePerHour: 1000,
+			DurationSeconds:     7200,
+			MaxPricePerNodeHour: 1000,
 		},
 	)
 	if err != nil {
@@ -110,13 +110,7 @@ func TestNodeRelease(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Nodes.Release(
-		context.TODO(),
-		"id",
-		sfcnodes.NodeReleaseParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.Nodes.Release(context.TODO(), "id")
 	if err != nil {
 		var apierr *sfcnodes.Error
 		if errors.As(err, &apierr) {
