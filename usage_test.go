@@ -24,12 +24,9 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	response, err := client.Vms.Logs(context.TODO(), sfcnodes.VmLogsParams{
-		InstanceID: "instance_id",
-		OrderBy:    sfcnodes.VmLogsParamsOrderBySeqnumAsc,
-	})
+	listResponseNode, err := client.Nodes.List(context.TODO())
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", response.Data)
+	t.Logf("%+v\n", listResponseNode.Data)
 }
