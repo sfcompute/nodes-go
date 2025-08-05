@@ -33,7 +33,7 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 			Zone:                "hayesvalley",
 			EndAt:               sfcnodes.Int(0),
 			Names:               []string{"cuda-crunch"},
-			NodeType:            sfcnodes.NodeTypeOnDemand,
+			NodeType:            sfcnodes.NodeTypeSpot,
 			StartAt:             sfcnodes.Int(1640995200),
 		},
 	})
