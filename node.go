@@ -98,9 +98,7 @@ type CreateNodesRequestParam struct {
 	// Custom node names. Names cannot follow the vm\_{alpha_numeric_chars} as this is
 	// reserved for system-generated IDs. Names cannot be numeric strings.
 	Names []string `json:"names,omitzero"`
-	// Database enum matching the node_type enum in the database
-	//
-	// Any of "spot", "reserved".
+	// Any of "on_demand", "reserved".
 	NodeType NodeType `json:"node_type,omitzero"`
 	paramObj
 }
@@ -154,31 +152,27 @@ type ListResponseNodeData struct {
 	// Any of "H100", "H200".
 	GPUType AcceleratorType `json:"gpu_type,required"`
 	Name    string          `json:"name,required"`
-	// Database enum matching the node_type enum in the database
-	//
-	// Any of "spot", "reserved".
+	// Any of "on_demand", "reserved".
 	NodeType NodeType `json:"node_type,required"`
 	Object   string   `json:"object,required"`
 	Owner    string   `json:"owner,required"`
 	// Node Status
 	//
-	// Any of "pending", "awaitingcapacity", "running", "released", "terminated",
-	// "deleted", "failed", "unknown".
+	// Any of "pending", "running", "terminated", "failed", "unknown".
 	Status Status `json:"status,required"`
 	// Creation time as Unix timestamp in seconds
 	CreatedAt int64 `json:"created_at,nullable"`
-	// Deletion time as Unix timestamp in seconds
-	DeletedAt int64 `json:"deleted_at,nullable"`
 	// End time as Unix timestamp in seconds
 	EndAt int64 `json:"end_at,nullable"`
 	// Max price per hour you're willing to pay for a node in cents
 	MaxPricePerNodeHour int64  `json:"max_price_per_node_hour,nullable"`
 	ProcurementID       string `json:"procurement_id,nullable"`
+	// Any of "uninitialized", "active", "ended", "awaiting_capacity".
+	ProcurementStatus ProcurementStatus `json:"procurement_status,nullable"`
 	// Start time as Unix timestamp in seconds
 	StartAt int64 `json:"start_at,nullable"`
 	// Last updated time as Unix timestamp in seconds
-	UpdatedAt int64                   `json:"updated_at,nullable"`
-	Vms       ListResponseNodeDataVms `json:"vms,nullable"`
+	UpdatedAt int64 `json:"updated_at,nullable"`
 	// Choose from these zones when creating a node
 	//
 	// Any of "hayesvalley".
@@ -193,13 +187,12 @@ type ListResponseNodeData struct {
 		Owner               respjson.Field
 		Status              respjson.Field
 		CreatedAt           respjson.Field
-		DeletedAt           respjson.Field
 		EndAt               respjson.Field
 		MaxPricePerNodeHour respjson.Field
 		ProcurementID       respjson.Field
+		ProcurementStatus   respjson.Field
 		StartAt             respjson.Field
 		UpdatedAt           respjson.Field
-		Vms                 respjson.Field
 		Zone                respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
@@ -212,83 +205,32 @@ func (r *ListResponseNodeData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ListResponseNodeDataVms struct {
-	Data   []ListResponseNodeDataVmsData `json:"data,required"`
-	Object string                        `json:"object,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Object      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ListResponseNodeDataVms) RawJSON() string { return r.JSON.raw }
-func (r *ListResponseNodeDataVms) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ListResponseNodeDataVmsData struct {
-	ID        string `json:"id,required"`
-	CreatedAt int64  `json:"created_at,required"`
-	EndAt     int64  `json:"end_at,required"`
-	Object    string `json:"object,required"`
-	StartAt   int64  `json:"start_at,required"`
-	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
-	Status    string `json:"status,required"`
-	UpdatedAt int64  `json:"updated_at,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EndAt       respjson.Field
-		Object      respjson.Field
-		StartAt     respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ListResponseNodeDataVmsData) RawJSON() string { return r.JSON.raw }
-func (r *ListResponseNodeDataVmsData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type Node struct {
 	ID string `json:"id,required"`
 	// Any of "H100", "H200".
 	GPUType AcceleratorType `json:"gpu_type,required"`
 	Name    string          `json:"name,required"`
-	// Database enum matching the node_type enum in the database
-	//
-	// Any of "spot", "reserved".
+	// Any of "on_demand", "reserved".
 	NodeType NodeType `json:"node_type,required"`
 	Object   string   `json:"object,required"`
 	Owner    string   `json:"owner,required"`
 	// Node Status
 	//
-	// Any of "pending", "awaitingcapacity", "running", "released", "terminated",
-	// "deleted", "failed", "unknown".
+	// Any of "pending", "running", "terminated", "failed", "unknown".
 	Status Status `json:"status,required"`
 	// Creation time as Unix timestamp in seconds
 	CreatedAt int64 `json:"created_at,nullable"`
-	// Deletion time as Unix timestamp in seconds
-	DeletedAt int64 `json:"deleted_at,nullable"`
 	// End time as Unix timestamp in seconds
 	EndAt int64 `json:"end_at,nullable"`
 	// Max price per hour you're willing to pay for a node in cents
 	MaxPricePerNodeHour int64  `json:"max_price_per_node_hour,nullable"`
 	ProcurementID       string `json:"procurement_id,nullable"`
+	// Any of "uninitialized", "active", "ended", "awaiting_capacity".
+	ProcurementStatus ProcurementStatus `json:"procurement_status,nullable"`
 	// Start time as Unix timestamp in seconds
 	StartAt int64 `json:"start_at,nullable"`
 	// Last updated time as Unix timestamp in seconds
-	UpdatedAt int64   `json:"updated_at,nullable"`
-	Vms       NodeVms `json:"vms,nullable"`
+	UpdatedAt int64 `json:"updated_at,nullable"`
 	// Choose from these zones when creating a node
 	//
 	// Any of "hayesvalley".
@@ -303,13 +245,12 @@ type Node struct {
 		Owner               respjson.Field
 		Status              respjson.Field
 		CreatedAt           respjson.Field
-		DeletedAt           respjson.Field
 		EndAt               respjson.Field
 		MaxPricePerNodeHour respjson.Field
 		ProcurementID       respjson.Field
+		ProcurementStatus   respjson.Field
 		StartAt             respjson.Field
 		UpdatedAt           respjson.Field
-		Vms                 respjson.Field
 		Zone                respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
@@ -322,73 +263,31 @@ func (r *Node) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NodeVms struct {
-	Data   []NodeVmsData `json:"data,required"`
-	Object string        `json:"object,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Object      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NodeVms) RawJSON() string { return r.JSON.raw }
-func (r *NodeVms) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NodeVmsData struct {
-	ID        string `json:"id,required"`
-	CreatedAt int64  `json:"created_at,required"`
-	EndAt     int64  `json:"end_at,required"`
-	Object    string `json:"object,required"`
-	StartAt   int64  `json:"start_at,required"`
-	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
-	Status    string `json:"status,required"`
-	UpdatedAt int64  `json:"updated_at,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		EndAt       respjson.Field
-		Object      respjson.Field
-		StartAt     respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NodeVmsData) RawJSON() string { return r.JSON.raw }
-func (r *NodeVmsData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Database enum matching the node_type enum in the database
 type NodeType string
 
 const (
-	NodeTypeSpot     NodeType = "spot"
+	NodeTypeOnDemand NodeType = "on_demand"
 	NodeTypeReserved NodeType = "reserved"
+)
+
+type ProcurementStatus string
+
+const (
+	ProcurementStatusUninitialized    ProcurementStatus = "uninitialized"
+	ProcurementStatusActive           ProcurementStatus = "active"
+	ProcurementStatusEnded            ProcurementStatus = "ended"
+	ProcurementStatusAwaitingCapacity ProcurementStatus = "awaiting_capacity"
 )
 
 // Node Status
 type Status string
 
 const (
-	StatusPending          Status = "pending"
-	StatusAwaitingcapacity Status = "awaitingcapacity"
-	StatusRunning          Status = "running"
-	StatusReleased         Status = "released"
-	StatusTerminated       Status = "terminated"
-	StatusDeleted          Status = "deleted"
-	StatusFailed           Status = "failed"
-	StatusUnknown          Status = "unknown"
+	StatusPending    Status = "pending"
+	StatusRunning    Status = "running"
+	StatusTerminated Status = "terminated"
+	StatusFailed     Status = "failed"
+	StatusUnknown    Status = "unknown"
 )
 
 // Choose from these zones when creating a node
