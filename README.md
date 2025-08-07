@@ -50,7 +50,7 @@ import (
 
 func main() {
 	client := sfcnodes.NewClient(
-		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("SFC_API_KEY")
+		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("SFC_NODES_BEARER_TOKEN")
 	)
 	listResponseNode, err := client.Nodes.List(context.TODO())
 	if err != nil {
