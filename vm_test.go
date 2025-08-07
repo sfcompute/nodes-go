@@ -24,7 +24,7 @@ func TestVmLogsWithOptionalParams(t *testing.T) {
 	}
 	client := sfcnodes.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Vms.Logs(context.TODO(), sfcnodes.VmLogsParams{
 		InstanceID:              "instance_id",
@@ -55,7 +55,7 @@ func TestVmSSH(t *testing.T) {
 	}
 	client := sfcnodes.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Vms.SSH(context.TODO(), sfcnodes.VmSSHParams{
 		VmID: "vm_id",
