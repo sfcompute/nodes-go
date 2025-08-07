@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/sfcompute/nodes-go/internal/apijson"
+	shimjson "github.com/sfcompute/nodes-go/internal/encoding/json"
 	"github.com/sfcompute/nodes-go/internal/requestconfig"
 	"github.com/sfcompute/nodes-go/option"
 	"github.com/sfcompute/nodes-go/packages/param"
@@ -404,7 +405,7 @@ type NodeNewParams struct {
 }
 
 func (r NodeNewParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.CreateNodesRequest)
+	return shimjson.Marshal(r.CreateNodesRequest)
 }
 func (r *NodeNewParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.CreateNodesRequest)
@@ -416,7 +417,7 @@ type NodeExtendParams struct {
 }
 
 func (r NodeExtendParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.ExtendNodeRequest)
+	return shimjson.Marshal(r.ExtendNodeRequest)
 }
 func (r *NodeExtendParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.ExtendNodeRequest)
