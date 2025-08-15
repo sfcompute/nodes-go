@@ -66,6 +66,18 @@ func (r *NodeService) Extend(ctx context.Context, id string, body NodeExtendPara
 	return
 }
 
+// Retrieve details of a specific node by its ID or name
+func (r *NodeService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *Node, err error) {
+	opts = append(r.Options[:], opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("v1/nodes/%s", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 // Release an on-demand VM node from its procurement, reducing the procurement's
 // desired quantity by 1
 func (r *NodeService) Release(ctx context.Context, id string, opts ...option.RequestOption) (res *Node, err error) {
