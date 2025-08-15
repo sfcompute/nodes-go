@@ -24,7 +24,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	listResponseNode, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
+	listResponseNode, err := client.Nodes.List(context.TODO())
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}

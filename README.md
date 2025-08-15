@@ -52,7 +52,7 @@ func main() {
 	client := sfcnodes.NewClient(
 		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("SFC_NODES_BEARER_TOKEN")
 	)
-	listResponseNode, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
+	listResponseNode, err := client.Nodes.List(context.TODO())
 	if err != nil {
 		panic(err.Error())
 	}
@@ -293,7 +293,7 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
+_, err := client.Nodes.List(context.TODO())
 if err != nil {
 	var apierr *sfcnodes.Error
 	if errors.As(err, &apierr) {
@@ -320,7 +320,6 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.Nodes.List(
 	ctx,
-	sfcnodes.NodeListParams{},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -354,11 +353,7 @@ client := sfcnodes.NewClient(
 )
 
 // Override per-request:
-client.Nodes.List(
-	context.TODO(),
-	sfcnodes.NodeListParams{},
-	option.WithMaxRetries(5),
-)
+client.Nodes.List(context.TODO(), option.WithMaxRetries(5))
 ```
 
 ### Accessing raw response data (e.g. response headers)
@@ -369,11 +364,7 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-listResponseNode, err := client.Nodes.List(
-	context.TODO(),
-	sfcnodes.NodeListParams{},
-	option.WithResponseInto(&response),
-)
+listResponseNode, err := client.Nodes.List(context.TODO(), option.WithResponseInto(&response))
 if err != nil {
 	// handle error
 }
