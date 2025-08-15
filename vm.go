@@ -146,7 +146,7 @@ type VmLogsParams struct {
 // URLQuery serializes [VmLogsParams]'s query parameters as `url.Values`.
 func (r VmLogsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -166,7 +166,7 @@ type VmSSHParams struct {
 // URLQuery serializes [VmSSHParams]'s query parameters as `url.Values`.
 func (r VmSSHParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
