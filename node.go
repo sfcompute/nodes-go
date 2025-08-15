@@ -8,10 +8,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 
 	"github.com/sfcompute/nodes-go/internal/apijson"
-	"github.com/sfcompute/nodes-go/internal/apiquery"
 	shimjson "github.com/sfcompute/nodes-go/internal/encoding/json"
 	"github.com/sfcompute/nodes-go/internal/requestconfig"
 	"github.com/sfcompute/nodes-go/option"
@@ -47,10 +45,10 @@ func (r *NodeService) New(ctx context.Context, body NodeNewParams, opts ...optio
 }
 
 // List all VM nodes for the authenticated account
-func (r *NodeService) List(ctx context.Context, query NodeListParams, opts ...option.RequestOption) (res *ListResponseNode, err error) {
+func (r *NodeService) List(ctx context.Context, opts ...option.RequestOption) (res *ListResponseNode, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/nodes"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -63,18 +61,6 @@ func (r *NodeService) Extend(ctx context.Context, id string, body NodeExtendPara
 	}
 	path := fmt.Sprintf("v1/nodes/%s/extend", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
-}
-
-// Retrieve details of a specific node by its ID or name
-func (r *NodeService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *Node, err error) {
-	opts = append(r.Options[:], opts...)
-	if id == "" {
-		err = errors.New("missing required id parameter")
-		return
-	}
-	path := fmt.Sprintf("v1/nodes/%s", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -113,7 +99,9 @@ type CreateNodesRequestParam struct {
 	// Custom node names. Names cannot follow the vm\_{alpha_numeric_chars} as this is
 	// reserved for system-generated IDs. Names cannot be numeric strings.
 	Names []string `json:"names,omitzero"`
-	// Any of "autoreserved", "reserved".
+	// Database enum matching the node_type enum in the database
+	//
+	// Any of "spot", "reserved".
 	NodeType NodeType `json:"node_type,omitzero"`
 	paramObj
 }
@@ -167,7 +155,9 @@ type ListResponseNodeData struct {
 	// Any of "H100", "H200".
 	GPUType AcceleratorType `json:"gpu_type,required"`
 	Name    string          `json:"name,required"`
-	// Any of "autoreserved", "reserved".
+	// Database enum matching the node_type enum in the database
+	//
+	// Any of "spot", "reserved".
 	NodeType NodeType `json:"node_type,required"`
 	Object   string   `json:"object,required"`
 	Owner    string   `json:"owner,required"`
@@ -192,7 +182,7 @@ type ListResponseNodeData struct {
 	Vms       ListResponseNodeDataVms `json:"vms,nullable"`
 	// Choose from these zones when creating a node
 	//
-	// Any of "hayesvalley", "fishermanswharf".
+	// Any of "hayesvalley".
 	Zone Zone `json:"zone,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -275,7 +265,9 @@ type Node struct {
 	// Any of "H100", "H200".
 	GPUType AcceleratorType `json:"gpu_type,required"`
 	Name    string          `json:"name,required"`
-	// Any of "autoreserved", "reserved".
+	// Database enum matching the node_type enum in the database
+	//
+	// Any of "spot", "reserved".
 	NodeType NodeType `json:"node_type,required"`
 	Object   string   `json:"object,required"`
 	Owner    string   `json:"owner,required"`
@@ -300,7 +292,7 @@ type Node struct {
 	Vms       NodeVms `json:"vms,nullable"`
 	// Choose from these zones when creating a node
 	//
-	// Any of "hayesvalley", "fishermanswharf".
+	// Any of "hayesvalley".
 	Zone Zone `json:"zone,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -378,11 +370,12 @@ func (r *NodeVmsData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Database enum matching the node_type enum in the database
 type NodeType string
 
 const (
-	NodeTypeAutoreserved NodeType = "autoreserved"
-	NodeTypeReserved     NodeType = "reserved"
+	NodeTypeSpot     NodeType = "spot"
+	NodeTypeReserved NodeType = "reserved"
 )
 
 // Node Status
@@ -403,8 +396,7 @@ const (
 type Zone string
 
 const (
-	ZoneHayesvalley     Zone = "hayesvalley"
-	ZoneFishermanswharf Zone = "fishermanswharf"
+	ZoneHayesvalley Zone = "hayesvalley"
 )
 
 type NodeNewParams struct {
@@ -417,24 +409,6 @@ func (r NodeNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *NodeNewParams) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &r.CreateNodesRequest)
-}
-
-type NodeListParams struct {
-	// Filter nodes by node_id Use ?id=n_b1dc52505c6db142&id=n_b1dc52505c6db133 to
-	// specify multiple IDs. Cannot be used with name
-	ID []string `query:"id,omitzero" json:"-"`
-	// Filter nodes by their names Use ?name=val1&name=val2 to specify multiple names.
-	// Cannot be used with id
-	Name []string `query:"name,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [NodeListParams]'s query parameters as `url.Values`.
-func (r NodeListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
 }
 
 type NodeExtendParams struct {
