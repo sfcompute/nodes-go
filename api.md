@@ -42,7 +42,6 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/sfcompute/nodes-go">sfcnodes</a>.<a href="https://pkg.go.dev/github.com/sfcompute/nodes-go#Node">Node</a>
 - <a href="https://pkg.go.dev/github.com/sfcompute/nodes-go">sfcnodes</a>.<a href="https://pkg.go.dev/github.com/sfcompute/nodes-go#NodeType">NodeType</a>
 - <a href="https://pkg.go.dev/github.com/sfcompute/nodes-go">sfcnodes</a>.<a href="https://pkg.go.dev/github.com/sfcompute/nodes-go#Status">Status</a>
-- <a href="https://pkg.go.dev/github.com/sfcompute/nodes-go">sfcnodes</a>.<a href="https://pkg.go.dev/github.com/sfcompute/nodes-go#Zone">Zone</a>
 
 Methods:
 
