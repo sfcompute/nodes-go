@@ -103,7 +103,7 @@ type CreateNodesRequestParam struct {
 	DesiredCount int64 `json:"desired_count,required"`
 	// Max price per hour for a node in cents
 	MaxPricePerNodeHour int64 `json:"max_price_per_node_hour,required"`
-	// Zone to create the nodes in. See Zone enum for valid values.
+	// Zone to create the nodes in
 	Zone string `json:"zone,required"`
 	// End time as Unix timestamp in seconds. If provided, end time must be aligned to
 	// the hour. If not provided, the node will be created as an on-demand node.
@@ -190,10 +190,7 @@ type ListResponseNodeData struct {
 	// Last updated time as Unix timestamp in seconds
 	UpdatedAt int64                   `json:"updated_at,nullable"`
 	Vms       ListResponseNodeDataVms `json:"vms,nullable"`
-	// Choose from these zones when creating a node
-	//
-	// Any of "hayesvalley", "fishermanswharf".
-	Zone Zone `json:"zone,nullable"`
+	Zone      string                  `json:"zone,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -298,10 +295,7 @@ type Node struct {
 	// Last updated time as Unix timestamp in seconds
 	UpdatedAt int64   `json:"updated_at,nullable"`
 	Vms       NodeVms `json:"vms,nullable"`
-	// Choose from these zones when creating a node
-	//
-	// Any of "hayesvalley", "fishermanswharf".
-	Zone Zone `json:"zone,nullable"`
+	Zone      string  `json:"zone,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -397,14 +391,6 @@ const (
 	StatusDeleted          Status = "deleted"
 	StatusFailed           Status = "failed"
 	StatusUnknown          Status = "unknown"
-)
-
-// Choose from these zones when creating a node
-type Zone string
-
-const (
-	ZoneHayesvalley     Zone = "hayesvalley"
-	ZoneFishermanswharf Zone = "fishermanswharf"
 )
 
 type NodeNewParams struct {
