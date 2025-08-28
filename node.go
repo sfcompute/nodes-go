@@ -78,8 +78,8 @@ func (r *NodeService) Get(ctx context.Context, id string, opts ...option.Request
 	return
 }
 
-// Release an on-demand VM node from its procurement, reducing the procurement's
-// desired quantity by 1
+// Release an auto reserved VM node from its procurement, reducing the
+// procurement's desired quantity by 1
 func (r *NodeService) Release(ctx context.Context, id string, opts ...option.RequestOption) (res *Node, err error) {
 	opts = append(r.Options[:], opts...)
 	if id == "" {
@@ -106,7 +106,7 @@ type CreateNodesRequestParam struct {
 	// Zone to create the nodes in
 	Zone string `json:"zone,required"`
 	// End time as Unix timestamp in seconds. If provided, end time must be aligned to
-	// the hour. If not provided, the node will be created as an on-demand node.
+	// the hour. If not provided, the node will be created as an autoreserved node.
 	EndAt param.Opt[int64] `json:"end_at,omitzero"`
 	// Start time as Unix timestamp in seconds
 	StartAt param.Opt[int64] `json:"start_at,omitzero"`
