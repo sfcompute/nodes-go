@@ -8,12 +8,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 
-	"github.com/stainless-sdks/sfc-nodes-go/internal/apijson"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/requestconfig"
-	"github.com/stainless-sdks/sfc-nodes-go/option"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/respjson"
+	"github.com/sfcompute/nodes-go/internal/apijson"
+	"github.com/sfcompute/nodes-go/internal/apiquery"
+	shimjson "github.com/sfcompute/nodes-go/internal/encoding/json"
+	"github.com/sfcompute/nodes-go/internal/requestconfig"
+	"github.com/sfcompute/nodes-go/option"
+	"github.com/sfcompute/nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
 // NodeService contains methods and other services that help with interacting with
@@ -36,7 +39,7 @@ func NewNodeService(opts ...option.RequestOption) (r NodeService) {
 }
 
 // Create VM nodes
-func (r *NodeService) New(ctx context.Context, body NodeNewParams, opts ...option.RequestOption) (res *[]Node, err error) {
+func (r *NodeService) New(ctx context.Context, body NodeNewParams, opts ...option.RequestOption) (res *ListResponseNode, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/nodes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -44,15 +47,15 @@ func (r *NodeService) New(ctx context.Context, body NodeNewParams, opts ...optio
 }
 
 // List all VM nodes for the authenticated account
-func (r *NodeService) List(ctx context.Context, opts ...option.RequestOption) (res *[]Node, err error) {
+func (r *NodeService) List(ctx context.Context, query NodeListParams, opts ...option.RequestOption) (res *ListResponseNode, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/nodes"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
-// Extend the end time of a reservation-based VM node by purchasing additional time
-func (r *NodeService) Extend(ctx context.Context, id string, body NodeExtendParams, opts ...option.RequestOption) (res *UpdateNode, err error) {
+// Purchase additional time to extend the end time of a reserved VM node
+func (r *NodeService) Extend(ctx context.Context, id string, body NodeExtendParams, opts ...option.RequestOption) (res *Node, err error) {
 	opts = append(r.Options[:], opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -63,63 +66,256 @@ func (r *NodeService) Extend(ctx context.Context, id string, body NodeExtendPara
 	return
 }
 
-// Release an on-demand VM node from its procurement, reducing the procurement's
-// desired quantity by 1
-func (r *NodeService) Release(ctx context.Context, id string, body NodeReleaseParams, opts ...option.RequestOption) (res *UpdateNode, err error) {
+// Retrieve details of a specific node by its ID or name
+func (r *NodeService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *Node, err error) {
+	opts = append(r.Options[:], opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return
+	}
+	path := fmt.Sprintf("v1/nodes/%s", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+// Release an auto reserved VM node from its procurement, reducing the
+// procurement's desired quantity by 1
+func (r *NodeService) Release(ctx context.Context, id string, opts ...option.RequestOption) (res *Node, err error) {
 	opts = append(r.Options[:], opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
 	path := fmt.Sprintf("v1/nodes/%s/release", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
 	return
+}
+
+type AcceleratorType string
+
+const (
+	AcceleratorTypeH100 AcceleratorType = "H100"
+	AcceleratorTypeH200 AcceleratorType = "H200"
+)
+
+// The properties DesiredCount, MaxPricePerNodeHour, Zone are required.
+type CreateNodesRequestParam struct {
+	DesiredCount int64 `json:"desired_count,required"`
+	// Max price per hour for a node in cents
+	MaxPricePerNodeHour int64 `json:"max_price_per_node_hour,required"`
+	// Zone to create the nodes in
+	Zone string `json:"zone,required"`
+	// End time as Unix timestamp in seconds. If provided, end time must be aligned to
+	// the hour. If not provided, the node will be created as an autoreserved node.
+	EndAt param.Opt[int64] `json:"end_at,omitzero"`
+	// Start time as Unix timestamp in seconds
+	StartAt param.Opt[int64] `json:"start_at,omitzero"`
+	// Custom node names. Names cannot follow the vm\_{alpha_numeric_chars} as this is
+	// reserved for system-generated IDs. Names cannot be numeric strings.
+	Names []string `json:"names,omitzero"`
+	// Any of "autoreserved", "reserved".
+	NodeType NodeType `json:"node_type,omitzero"`
+	paramObj
+}
+
+func (r CreateNodesRequestParam) MarshalJSON() (data []byte, err error) {
+	type shadow CreateNodesRequestParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *CreateNodesRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties DurationSeconds, MaxPricePerNodeHour are required.
+type ExtendNodeRequestParam struct {
+	// Duration in seconds to extend the node Must be at least 1 hour (3600 seconds)
+	// and a multiple of 1 hour.
+	DurationSeconds int64 `json:"duration_seconds,required"`
+	// Max price per hour for the extension in cents
+	MaxPricePerNodeHour int64 `json:"max_price_per_node_hour,required"`
+	paramObj
+}
+
+func (r ExtendNodeRequestParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtendNodeRequestParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtendNodeRequestParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ListResponseNode struct {
+	Data   []ListResponseNodeData `json:"data,required"`
+	Object string                 `json:"object,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Object      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ListResponseNode) RawJSON() string { return r.JSON.raw }
+func (r *ListResponseNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ListResponseNodeData struct {
+	ID string `json:"id,required"`
+	// Any of "H100", "H200".
+	GPUType AcceleratorType `json:"gpu_type,required"`
+	Name    string          `json:"name,required"`
+	// Any of "autoreserved", "reserved".
+	NodeType NodeType `json:"node_type,required"`
+	Object   string   `json:"object,required"`
+	Owner    string   `json:"owner,required"`
+	// Node Status
+	//
+	// Any of "pending", "awaitingcapacity", "running", "released", "terminated",
+	// "deleted", "failed", "unknown".
+	Status Status `json:"status,required"`
+	// Creation time as Unix timestamp in seconds
+	CreatedAt int64 `json:"created_at,nullable"`
+	// Deletion time as Unix timestamp in seconds
+	DeletedAt int64 `json:"deleted_at,nullable"`
+	// End time as Unix timestamp in seconds
+	EndAt int64 `json:"end_at,nullable"`
+	// Max price per hour you're willing to pay for a node in cents
+	MaxPricePerNodeHour int64  `json:"max_price_per_node_hour,nullable"`
+	ProcurementID       string `json:"procurement_id,nullable"`
+	// Start time as Unix timestamp in seconds
+	StartAt int64 `json:"start_at,nullable"`
+	// Last updated time as Unix timestamp in seconds
+	UpdatedAt int64                   `json:"updated_at,nullable"`
+	Vms       ListResponseNodeDataVms `json:"vms,nullable"`
+	Zone      string                  `json:"zone,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                  respjson.Field
+		GPUType             respjson.Field
+		Name                respjson.Field
+		NodeType            respjson.Field
+		Object              respjson.Field
+		Owner               respjson.Field
+		Status              respjson.Field
+		CreatedAt           respjson.Field
+		DeletedAt           respjson.Field
+		EndAt               respjson.Field
+		MaxPricePerNodeHour respjson.Field
+		ProcurementID       respjson.Field
+		StartAt             respjson.Field
+		UpdatedAt           respjson.Field
+		Vms                 respjson.Field
+		Zone                respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ListResponseNodeData) RawJSON() string { return r.JSON.raw }
+func (r *ListResponseNodeData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ListResponseNodeDataVms struct {
+	Data   []ListResponseNodeDataVmsData `json:"data,required"`
+	Object string                        `json:"object,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Object      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ListResponseNodeDataVms) RawJSON() string { return r.JSON.raw }
+func (r *ListResponseNodeDataVms) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ListResponseNodeDataVmsData struct {
+	ID        string `json:"id,required"`
+	CreatedAt int64  `json:"created_at,required"`
+	EndAt     int64  `json:"end_at,required"`
+	Object    string `json:"object,required"`
+	StartAt   int64  `json:"start_at,required"`
+	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
+	Status    string `json:"status,required"`
+	UpdatedAt int64  `json:"updated_at,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		EndAt       respjson.Field
+		Object      respjson.Field
+		StartAt     respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ListResponseNodeDataVmsData) RawJSON() string { return r.JSON.raw }
+func (r *ListResponseNodeDataVmsData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type Node struct {
 	ID string `json:"id,required"`
 	// Any of "H100", "H200".
-	GPUType NodeGPUType `json:"gpu_type,required"`
-	Name    string      `json:"name,required"`
-	Node    string      `json:"node,required"`
-	// Any of "OnDemand", "Reserved".
+	GPUType AcceleratorType `json:"gpu_type,required"`
+	Name    string          `json:"name,required"`
+	// Any of "autoreserved", "reserved".
 	NodeType NodeType `json:"node_type,required"`
+	Object   string   `json:"object,required"`
 	Owner    string   `json:"owner,required"`
-	StartAt  int64    `json:"start_at,required"`
-	// Any of "Pending", "Running", "Terminated", "Failed", "Unknown".
-	Status          NodeStatus `json:"status,required"`
-	CreatedAt       int64      `json:"created_at,nullable"`
-	EndAt           int64      `json:"end_at,nullable"`
-	MaxPricePerHour int64      `json:"max_price_per_hour,nullable"`
-	ProcurementID   string     `json:"procurement_id,nullable"`
-	// Any of "Uninitialized", "Active", "Ended", "AwaitingCapacity".
-	ProcurementStatus NodeProcurementStatus `json:"procurement_status,nullable"`
-	UpdatedAt         int64                 `json:"updated_at,nullable"`
-	// Possible zones to choose from when creating a node.
+	// Node Status
 	//
-	// TODO (ENG-1976): Support dynamic zones through an endpoint.
-	//
-	// Any of "HayesValley".
-	Zone NodeZone `json:"zone,nullable"`
+	// Any of "pending", "awaitingcapacity", "running", "released", "terminated",
+	// "deleted", "failed", "unknown".
+	Status Status `json:"status,required"`
+	// Creation time as Unix timestamp in seconds
+	CreatedAt int64 `json:"created_at,nullable"`
+	// Deletion time as Unix timestamp in seconds
+	DeletedAt int64 `json:"deleted_at,nullable"`
+	// End time as Unix timestamp in seconds
+	EndAt int64 `json:"end_at,nullable"`
+	// Max price per hour you're willing to pay for a node in cents
+	MaxPricePerNodeHour int64  `json:"max_price_per_node_hour,nullable"`
+	ProcurementID       string `json:"procurement_id,nullable"`
+	// Start time as Unix timestamp in seconds
+	StartAt int64 `json:"start_at,nullable"`
+	// Last updated time as Unix timestamp in seconds
+	UpdatedAt int64   `json:"updated_at,nullable"`
+	Vms       NodeVms `json:"vms,nullable"`
+	Zone      string  `json:"zone,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                respjson.Field
-		GPUType           respjson.Field
-		Name              respjson.Field
-		Node              respjson.Field
-		NodeType          respjson.Field
-		Owner             respjson.Field
-		StartAt           respjson.Field
-		Status            respjson.Field
-		CreatedAt         respjson.Field
-		EndAt             respjson.Field
-		MaxPricePerHour   respjson.Field
-		ProcurementID     respjson.Field
-		ProcurementStatus respjson.Field
-		UpdatedAt         respjson.Field
-		Zone              respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		ID                  respjson.Field
+		GPUType             respjson.Field
+		Name                respjson.Field
+		NodeType            respjson.Field
+		Object              respjson.Field
+		Owner               respjson.Field
+		Status              respjson.Field
+		CreatedAt           respjson.Field
+		DeletedAt           respjson.Field
+		EndAt               respjson.Field
+		MaxPricePerNodeHour respjson.Field
+		ProcurementID       respjson.Field
+		StartAt             respjson.Field
+		UpdatedAt           respjson.Field
+		Vms                 respjson.Field
+		Zone                respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -129,112 +325,112 @@ func (r *Node) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NodeGPUType string
-
-const (
-	NodeGPUTypeH100 NodeGPUType = "H100"
-	NodeGPUTypeH200 NodeGPUType = "H200"
-)
-
-type NodeStatus string
-
-const (
-	NodeStatusPending    NodeStatus = "Pending"
-	NodeStatusRunning    NodeStatus = "Running"
-	NodeStatusTerminated NodeStatus = "Terminated"
-	NodeStatusFailed     NodeStatus = "Failed"
-	NodeStatusUnknown    NodeStatus = "Unknown"
-)
-
-type NodeProcurementStatus string
-
-const (
-	NodeProcurementStatusUninitialized    NodeProcurementStatus = "Uninitialized"
-	NodeProcurementStatusActive           NodeProcurementStatus = "Active"
-	NodeProcurementStatusEnded            NodeProcurementStatus = "Ended"
-	NodeProcurementStatusAwaitingCapacity NodeProcurementStatus = "AwaitingCapacity"
-)
-
-// Possible zones to choose from when creating a node.
-//
-// TODO (ENG-1976): Support dynamic zones through an endpoint.
-type NodeZone string
-
-const (
-	NodeZoneHayesValley NodeZone = "HayesValley"
-)
-
-type NodeType string
-
-const (
-	NodeTypeOnDemand NodeType = "OnDemand"
-	NodeTypeReserved NodeType = "Reserved"
-)
-
-type UpdateNode struct {
-	Node Node `json:"node,required"`
+type NodeVms struct {
+	Data   []NodeVmsData `json:"data,required"`
+	Object string        `json:"object,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Node        respjson.Field
+		Data        respjson.Field
+		Object      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r UpdateNode) RawJSON() string { return r.JSON.raw }
-func (r *UpdateNode) UnmarshalJSON(data []byte) error {
+func (r NodeVms) RawJSON() string { return r.JSON.raw }
+func (r *NodeVms) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type NodeVmsData struct {
+	ID        string `json:"id,required"`
+	CreatedAt int64  `json:"created_at,required"`
+	EndAt     int64  `json:"end_at,required"`
+	Object    string `json:"object,required"`
+	StartAt   int64  `json:"start_at,required"`
+	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
+	Status    string `json:"status,required"`
+	UpdatedAt int64  `json:"updated_at,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		EndAt       respjson.Field
+		Object      respjson.Field
+		StartAt     respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NodeVmsData) RawJSON() string { return r.JSON.raw }
+func (r *NodeVmsData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NodeType string
+
+const (
+	NodeTypeAutoreserved NodeType = "autoreserved"
+	NodeTypeReserved     NodeType = "reserved"
+)
+
+// Node Status
+type Status string
+
+const (
+	StatusPending          Status = "pending"
+	StatusAwaitingcapacity Status = "awaitingcapacity"
+	StatusRunning          Status = "running"
+	StatusReleased         Status = "released"
+	StatusTerminated       Status = "terminated"
+	StatusDeleted          Status = "deleted"
+	StatusFailed           Status = "failed"
+	StatusUnknown          Status = "unknown"
+)
+
 type NodeNewParams struct {
-	DesiredCount    int64 `json:"desired_count,required"`
-	MaxPricePerHour int64 `json:"max_price_per_hour,required"`
-	// End time as Unix timestamp in seconds
-	EndAt param.Opt[int64] `json:"end_at,omitzero"`
-	// Start time as Unix timestamp in seconds
-	StartAt param.Opt[int64]  `json:"start_at,omitzero"`
-	Zone    param.Opt[string] `json:"zone,omitzero"`
-	// Custom node names. Names cannot follow the vm*id pattern vm*{16_hex_chars} as
-	// this is reserved for system-generated IDs.
-	Names []string `json:"names,omitzero"`
-	// Any of "OnDemand", "Reserved".
-	NodeType NodeType `json:"node_type,omitzero"`
+	CreateNodesRequest CreateNodesRequestParam
 	paramObj
 }
 
 func (r NodeNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow NodeNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.CreateNodesRequest)
 }
 func (r *NodeNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return json.Unmarshal(data, &r.CreateNodesRequest)
+}
+
+type NodeListParams struct {
+	// Filter nodes by node_id Use ?id=n_b1dc52505c6db142&id=n_b1dc52505c6db133 to
+	// specify multiple IDs. Cannot be used with name
+	ID []string `query:"id,omitzero" json:"-"`
+	// Filter nodes by their names Use ?name=val1&name=val2 to specify multiple names.
+	// Cannot be used with id
+	Name []string `query:"name,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [NodeListParams]'s query parameters as `url.Values`.
+func (r NodeListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type NodeExtendParams struct {
-	// Duration in seconds to extend the node by
-	DurationSeconds int64 `json:"duration_seconds,required"`
-	// Max price per hour for the extension in cents
-	MaxPricePerHour int64 `json:"max_price_per_hour,required"`
+	ExtendNodeRequest ExtendNodeRequestParam
 	paramObj
 }
 
 func (r NodeExtendParams) MarshalJSON() (data []byte, err error) {
-	type shadow NodeExtendParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.ExtendNodeRequest)
 }
 func (r *NodeExtendParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NodeReleaseParams struct {
-	Body any
-	paramObj
-}
-
-func (r NodeReleaseParams) MarshalJSON() (data []byte, err error) {
-	return json.Marshal(r.Body)
-}
-func (r *NodeReleaseParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Body)
+	return json.Unmarshal(data, &r.ExtendNodeRequest)
 }

@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/packages/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc
@@ -21,7 +21,7 @@ var encoders sync.Map // map[encoderEntry]encoderFunc
 func Marshal(value any, writer *multipart.Writer) error {
 	e := &encoder{
 		dateFormat: time.RFC3339,
-		arrayFmt:   "comma",
+		arrayFmt:   "repeat",
 	}
 	return e.marshal(value, writer)
 }
@@ -30,7 +30,7 @@ func MarshalRoot(value any, writer *multipart.Writer) error {
 	e := &encoder{
 		root:       true,
 		dateFormat: time.RFC3339,
-		arrayFmt:   "comma",
+		arrayFmt:   "repeat",
 	}
 	return e.marshal(value, writer)
 }

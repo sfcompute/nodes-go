@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/sfc-nodes-go"
-	"github.com/stainless-sdks/sfc-nodes-go/internal"
-	"github.com/stainless-sdks/sfc-nodes-go/option"
+	"github.com/sfcompute/nodes-go"
+	"github.com/sfcompute/nodes-go/internal"
+	"github.com/sfcompute/nodes-go/option"
 )
 
 type closureTransport struct {
@@ -38,7 +38,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Nodes.List(context.Background())
+	client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
 	if userAgent != fmt.Sprintf("SFCNodes/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
 	}
@@ -62,7 +62,7 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Nodes.List(context.Background())
+	_, err := client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -97,7 +97,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	_, err := client.Nodes.List(context.Background())
+	_, err := client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -127,7 +127,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	_, err := client.Nodes.List(context.Background())
+	_, err := client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -156,7 +156,7 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Nodes.List(context.Background())
+	_, err := client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -179,7 +179,7 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	_, err := client.Nodes.List(cancelCtx)
+	_, err := client.Nodes.List(cancelCtx, sfcnodes.NodeListParams{})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -199,7 +199,7 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	_, err := client.Nodes.List(cancelCtx)
+	_, err := client.Nodes.List(cancelCtx, sfcnodes.NodeListParams{})
 	if err == nil {
 		t.Error("expected there to be a cancel error")
 	}
@@ -225,7 +225,7 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		_, err := client.Nodes.List(deadlineCtx)
+		_, err := client.Nodes.List(deadlineCtx, sfcnodes.NodeListParams{})
 		if err == nil {
 			t.Error("expected there to be a deadline error")
 		}

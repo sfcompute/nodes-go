@@ -8,13 +8,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/sfc-nodes-go"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/testutil"
-	"github.com/stainless-sdks/sfc-nodes-go/option"
+	"github.com/sfcompute/nodes-go"
+	"github.com/sfcompute/nodes-go/internal/testutil"
+	"github.com/sfcompute/nodes-go/option"
 )
 
 func TestVmScriptNew(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -41,7 +41,7 @@ func TestVmScriptNew(t *testing.T) {
 }
 
 func TestVmScriptGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

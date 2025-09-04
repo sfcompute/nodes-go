@@ -1,6 +1,10 @@
 # SFC Nodes Go API Library
 
-<a href="https://pkg.go.dev/github.com/stainless-sdks/sfc-nodes-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/sfc-nodes-go.svg" alt="Go Reference"></a>
+<!-- x-release-please-start-version -->
+
+<a href="https://pkg.go.dev/github.com/sfcompute/nodes-go"><img src="https://pkg.go.dev/badge/github.com/sfcompute/nodes-go.svg" alt="Go Reference"></a>
+
+<!-- x-release-please-end -->
 
 The SFC Nodes Go library provides convenient access to the [SFC Nodes REST API](https://docs.sfcompute.com/api-reference#tag/nodes)
 from applications written in Go.
@@ -9,17 +13,25 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
+<!-- x-release-please-start-version -->
+
 ```go
 import (
-	"github.com/stainless-sdks/sfc-nodes-go" // imported as sfcnodes
+	"github.com/sfcompute/nodes-go" // imported as sfcnodes
 )
 ```
 
+<!-- x-release-please-end -->
+
 Or to pin the version:
 
+<!-- x-release-please-start-version -->
+
 ```sh
-go get -u 'github.com/stainless-sdks/sfc-nodes-go@v0.0.1-alpha.0'
+go get -u 'github.com/sfcompute/nodes-go@v0.1.0-alpha.1'
 ```
+
+<!-- x-release-please-end -->
 
 ## Requirements
 
@@ -36,19 +48,19 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/stainless-sdks/sfc-nodes-go"
-	"github.com/stainless-sdks/sfc-nodes-go/option"
+	"github.com/sfcompute/nodes-go"
+	"github.com/sfcompute/nodes-go/option"
 )
 
 func main() {
 	client := sfcnodes.NewClient(
-		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("SFC_BEARER_TOKEN")
+		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("SFC_NODES_BEARER_TOKEN")
 	)
-	nodes, err := client.Nodes.List(context.TODO())
+	listResponseNode, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", nodes)
+	fmt.Printf("%+v\n", listResponseNode.Data)
 }
 
 ```
@@ -264,7 +276,7 @@ client.Nodes.List(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/sfc-nodes-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/sfcompute/nodes-go/option).
 
 ### Pagination
 
@@ -285,7 +297,7 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Nodes.List(context.TODO())
+_, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
 if err != nil {
 	var apierr *sfcnodes.Error
 	if errors.As(err, &apierr) {
@@ -312,6 +324,7 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.Nodes.List(
 	ctx,
+	sfcnodes.NodeListParams{},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -345,7 +358,11 @@ client := sfcnodes.NewClient(
 )
 
 // Override per-request:
-client.Nodes.List(context.TODO(), option.WithMaxRetries(5))
+client.Nodes.List(
+	context.TODO(),
+	sfcnodes.NodeListParams{},
+	option.WithMaxRetries(5),
+)
 ```
 
 ### Accessing raw response data (e.g. response headers)
@@ -356,11 +373,15 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-nodes, err := client.Nodes.List(context.TODO(), option.WithResponseInto(&response))
+listResponseNode, err := client.Nodes.List(
+	context.TODO(),
+	sfcnodes.NodeListParams{},
+	option.WithResponseInto(&response),
+)
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", nodes)
+fmt.Printf("%+v\n", listResponseNode)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
@@ -461,7 +482,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/sfc-nodes-go/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/sfcompute/nodes-go/issues) with questions, bugs, or suggestions.
 
 ## Contributing
 

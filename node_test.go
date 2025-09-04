@@ -8,13 +8,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/sfc-nodes-go"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/testutil"
-	"github.com/stainless-sdks/sfc-nodes-go/option"
+	"github.com/sfcompute/nodes-go"
+	"github.com/sfcompute/nodes-go/internal/testutil"
+	"github.com/sfcompute/nodes-go/option"
 )
 
 func TestNodeNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,13 +27,15 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Nodes.New(context.TODO(), sfcnodes.NodeNewParams{
-		DesiredCount:    1,
-		MaxPricePerHour: 1000,
-		EndAt:           sfcnodes.Int(1640995200),
-		Names:           []string{"string"},
-		NodeType:        sfcnodes.NodeTypeOnDemand,
-		StartAt:         sfcnodes.Int(1640995200),
-		Zone:            sfcnodes.String("zone"),
+		CreateNodesRequest: sfcnodes.CreateNodesRequestParam{
+			DesiredCount:        1,
+			MaxPricePerNodeHour: 1000,
+			Zone:                "hayesvalley",
+			EndAt:               sfcnodes.Int(0),
+			Names:               []string{"cuda-crunch"},
+			NodeType:            sfcnodes.NodeTypeAutoreserved,
+			StartAt:             sfcnodes.Int(1640995200),
+		},
 	})
 	if err != nil {
 		var apierr *sfcnodes.Error
@@ -44,8 +46,8 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestNodeList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+func TestNodeListWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,7 +59,10 @@ func TestNodeList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Nodes.List(context.TODO())
+	_, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{
+		ID:   []string{"string"},
+		Name: []string{"string"},
+	})
 	if err != nil {
 		var apierr *sfcnodes.Error
 		if errors.As(err, &apierr) {
@@ -68,7 +73,7 @@ func TestNodeList(t *testing.T) {
 }
 
 func TestNodeExtend(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -84,8 +89,10 @@ func TestNodeExtend(t *testing.T) {
 		context.TODO(),
 		"id",
 		sfcnodes.NodeExtendParams{
-			DurationSeconds: 7200,
-			MaxPricePerHour: 1000,
+			ExtendNodeRequest: sfcnodes.ExtendNodeRequestParam{
+				DurationSeconds:     7200,
+				MaxPricePerNodeHour: 1000,
+			},
 		},
 	)
 	if err != nil {
@@ -97,8 +104,8 @@ func TestNodeExtend(t *testing.T) {
 	}
 }
 
-func TestNodeRelease(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+func TestNodeGet(t *testing.T) {
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -110,13 +117,30 @@ func TestNodeRelease(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Nodes.Release(
-		context.TODO(),
-		"id",
-		sfcnodes.NodeReleaseParams{
-			Body: map[string]interface{}{},
-		},
+	_, err := client.Nodes.Get(context.TODO(), "id")
+	if err != nil {
+		var apierr *sfcnodes.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestNodeRelease(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := sfcnodes.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
 	)
+	_, err := client.Nodes.Release(context.TODO(), "id")
 	if err != nil {
 		var apierr *sfcnodes.Error
 		if errors.As(err, &apierr) {

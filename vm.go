@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/sfc-nodes-go/internal/apijson"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/apiquery"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/requestconfig"
-	"github.com/stainless-sdks/sfc-nodes-go/option"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/respjson"
+	"github.com/sfcompute/nodes-go/internal/apijson"
+	"github.com/sfcompute/nodes-go/internal/apiquery"
+	"github.com/sfcompute/nodes-go/internal/requestconfig"
+	"github.com/sfcompute/nodes-go/option"
+	"github.com/sfcompute/nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
 // VmService contains methods and other services that help with interacting with
@@ -36,24 +36,10 @@ func NewVmService(opts ...option.RequestOption) (r VmService) {
 	return
 }
 
-func (r *VmService) List(ctx context.Context, opts ...option.RequestOption) (res *VmListResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "v0/vms/instances"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
 func (r *VmService) Logs(ctx context.Context, query VmLogsParams, opts ...option.RequestOption) (res *VmLogsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v0/vms/logs2"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
-}
-
-func (r *VmService) Replace(ctx context.Context, body VmReplaceParams, opts ...option.RequestOption) (res *VmReplaceResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "v0/vms/replace"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
@@ -62,46 +48,6 @@ func (r *VmService) SSH(ctx context.Context, query VmSSHParams, opts ...option.R
 	path := "v0/vms/ssh"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
-}
-
-type VmListResponse struct {
-	Data []VmListResponseData `json:"data,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VmListResponse) RawJSON() string { return r.JSON.raw }
-func (r *VmListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VmListResponseData struct {
-	ID              string `json:"id,required"`
-	ClusterID       string `json:"cluster_id,required"`
-	CurrentStatus   string `json:"current_status,required"`
-	InstanceGroupID string `json:"instance_group_id,required"`
-	LastUpdatedAt   string `json:"last_updated_at,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		ClusterID       respjson.Field
-		CurrentStatus   respjson.Field
-		InstanceGroupID respjson.Field
-		LastUpdatedAt   respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VmListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *VmListResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type VmLogsResponse struct {
@@ -144,24 +90,6 @@ type VmLogsResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r VmLogsResponseData) RawJSON() string { return r.JSON.raw }
 func (r *VmLogsResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VmReplaceResponse struct {
-	Replaced   string `json:"replaced,required"`
-	ReplacedBy string `json:"replaced_by,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Replaced    respjson.Field
-		ReplacedBy  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VmReplaceResponse) RawJSON() string { return r.JSON.raw }
-func (r *VmReplaceResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -218,7 +146,7 @@ type VmLogsParams struct {
 // URLQuery serializes [VmLogsParams]'s query parameters as `url.Values`.
 func (r VmLogsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -230,19 +158,6 @@ const (
 	VmLogsParamsOrderBySeqnumDesc VmLogsParamsOrderBy = "seqnum_desc"
 )
 
-type VmReplaceParams struct {
-	VmID string `json:"vm_id,required"`
-	paramObj
-}
-
-func (r VmReplaceParams) MarshalJSON() (data []byte, err error) {
-	type shadow VmReplaceParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *VmReplaceParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type VmSSHParams struct {
 	VmID string `query:"vm_id,required" json:"-"`
 	paramObj
@@ -251,7 +166,7 @@ type VmSSHParams struct {
 // URLQuery serializes [VmSSHParams]'s query parameters as `url.Values`.
 func (r VmSSHParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }

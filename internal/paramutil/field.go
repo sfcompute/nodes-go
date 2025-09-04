@@ -1,8 +1,8 @@
 package paramutil
 
 import (
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
-	"github.com/stainless-sdks/sfc-nodes-go/packages/respjson"
+	"github.com/sfcompute/nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
 func AddrIfPresent[T comparable](v param.Opt[T]) *T {

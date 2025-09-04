@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/sfc-nodes-go"
-	"github.com/stainless-sdks/sfc-nodes-go/internal/testutil"
-	"github.com/stainless-sdks/sfc-nodes-go/option"
+	"github.com/sfcompute/nodes-go"
+	"github.com/sfcompute/nodes-go/internal/testutil"
+	"github.com/sfcompute/nodes-go/option"
 )
 
 func TestUsage(t *testing.T) {
@@ -24,9 +24,9 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	nodes, err := client.Nodes.List(context.TODO())
+	listResponseNode, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", nodes)
+	t.Logf("%+v\n", listResponseNode.Data)
 }

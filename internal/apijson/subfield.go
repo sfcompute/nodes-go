@@ -1,7 +1,7 @@
 package apijson
 
 import (
-	"github.com/stainless-sdks/sfc-nodes-go/packages/respjson"
+	"github.com/sfcompute/nodes-go/packages/respjson"
 	"reflect"
 )
 

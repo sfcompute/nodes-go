@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/stainless-sdks/sfc-nodes-go/packages/param"
+	"github.com/sfcompute/nodes-go/packages/param"
 )
 
 var encoders sync.Map // map[reflect.Type]encoderFunc

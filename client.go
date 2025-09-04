@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/stainless-sdks/sfc-nodes-go/internal/requestconfig"
-	"github.com/stainless-sdks/sfc-nodes-go/option"
+	"github.com/sfcompute/nodes-go/internal/requestconfig"
+	"github.com/sfcompute/nodes-go/option"
 )
 
 // Client creates a struct with services and top level methods that help with
@@ -20,22 +20,22 @@ type Client struct {
 	Nodes   NodeService
 }
 
-// DefaultClientOptions read from the environment (SFC_BEARER_TOKEN,
+// DefaultClientOptions read from the environment (SFC_NODES_BEARER_TOKEN,
 // SFC_NODES_BASE_URL). This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("SFC_NODES_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
-	if o, ok := os.LookupEnv("SFC_BEARER_TOKEN"); ok {
+	if o, ok := os.LookupEnv("SFC_NODES_BEARER_TOKEN"); ok {
 		defaults = append(defaults, option.WithBearerToken(o))
 	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (SFC_BEARER_TOKEN, SFC_NODES_BASE_URL). The option passed in as
-// arguments are applied after these default arguments, and all option will be
+// environment (SFC_NODES_BEARER_TOKEN, SFC_NODES_BASE_URL). The option passed in
+// as arguments are applied after these default arguments, and all option will be
 // passed down to the services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
