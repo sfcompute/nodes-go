@@ -31,6 +31,7 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 			DesiredCount:        1,
 			MaxPricePerNodeHour: 1000,
 			Zone:                "hayesvalley",
+			CloudInitUserData:   []int64{0},
 			EndAt:               sfcnodes.Int(0),
 			Names:               []string{"cuda-crunch"},
 			NodeType:            sfcnodes.NodeTypeAutoreserved,
