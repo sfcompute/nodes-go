@@ -110,6 +110,8 @@ type CreateNodesRequestParam struct {
 	EndAt param.Opt[int64] `json:"end_at,omitzero"`
 	// Start time as Unix timestamp in seconds
 	StartAt param.Opt[int64] `json:"start_at,omitzero"`
+	// User script to be executed during the VM's boot process
+	CloudInitUserData []int64 `json:"cloud_init_user_data,omitzero"`
 	// Custom node names. Names cannot follow the vm\_{alpha_numeric_chars} as this is
 	// reserved for system-generated IDs. Names cannot be numeric strings.
 	Names []string `json:"names,omitzero"`

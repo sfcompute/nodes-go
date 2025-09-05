@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.2 (2025-09-05)
+
+Full Changelog: [v0.1.0-alpha.1...v0.1.0-alpha.2](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.1...v0.1.0-alpha.2)
+
+### Features
+
+* **api:** api update ([ed6f2e9](https://github.com/sfcompute/nodes-go/commit/ed6f2e905fabfd0fb526e5bb5a69565a76d86244))
+
 ## 0.1.0-alpha.1 (2025-09-04)
 
 Full Changelog: [v0.0.1-alpha.0...v0.1.0-alpha.1](https://github.com/sfcompute/nodes-go/compare/v0.0.1-alpha.0...v0.1.0-alpha.1)
