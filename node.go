@@ -191,7 +191,7 @@ type ListResponseNodeData struct {
 	StartAt int64 `json:"start_at,nullable"`
 	// Last updated time as Unix timestamp in seconds
 	UpdatedAt int64                   `json:"updated_at,nullable"`
-	Vms       ListResponseNodeDataVms `json:"vms,nullable"`
+	VMs       ListResponseNodeDataVMs `json:"vms,nullable"`
 	Zone      string                  `json:"zone,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -209,7 +209,7 @@ type ListResponseNodeData struct {
 		ProcurementID       respjson.Field
 		StartAt             respjson.Field
 		UpdatedAt           respjson.Field
-		Vms                 respjson.Field
+		VMs                 respjson.Field
 		Zone                respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
@@ -222,8 +222,8 @@ func (r *ListResponseNodeData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ListResponseNodeDataVms struct {
-	Data   []ListResponseNodeDataVmsData `json:"data,required"`
+type ListResponseNodeDataVMs struct {
+	Data   []ListResponseNodeDataVMsData `json:"data,required"`
 	Object string                        `json:"object,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -235,12 +235,12 @@ type ListResponseNodeDataVms struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ListResponseNodeDataVms) RawJSON() string { return r.JSON.raw }
-func (r *ListResponseNodeDataVms) UnmarshalJSON(data []byte) error {
+func (r ListResponseNodeDataVMs) RawJSON() string { return r.JSON.raw }
+func (r *ListResponseNodeDataVMs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ListResponseNodeDataVmsData struct {
+type ListResponseNodeDataVMsData struct {
 	ID        string `json:"id,required"`
 	CreatedAt int64  `json:"created_at,required"`
 	EndAt     int64  `json:"end_at,required"`
@@ -264,8 +264,8 @@ type ListResponseNodeDataVmsData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ListResponseNodeDataVmsData) RawJSON() string { return r.JSON.raw }
-func (r *ListResponseNodeDataVmsData) UnmarshalJSON(data []byte) error {
+func (r ListResponseNodeDataVMsData) RawJSON() string { return r.JSON.raw }
+func (r *ListResponseNodeDataVMsData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -296,7 +296,7 @@ type Node struct {
 	StartAt int64 `json:"start_at,nullable"`
 	// Last updated time as Unix timestamp in seconds
 	UpdatedAt int64   `json:"updated_at,nullable"`
-	Vms       NodeVms `json:"vms,nullable"`
+	VMs       NodeVMs `json:"vms,nullable"`
 	Zone      string  `json:"zone,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -314,7 +314,7 @@ type Node struct {
 		ProcurementID       respjson.Field
 		StartAt             respjson.Field
 		UpdatedAt           respjson.Field
-		Vms                 respjson.Field
+		VMs                 respjson.Field
 		Zone                respjson.Field
 		ExtraFields         map[string]respjson.Field
 		raw                 string
@@ -327,8 +327,8 @@ func (r *Node) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NodeVms struct {
-	Data   []NodeVmsData `json:"data,required"`
+type NodeVMs struct {
+	Data   []NodeVMsData `json:"data,required"`
 	Object string        `json:"object,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -340,12 +340,12 @@ type NodeVms struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NodeVms) RawJSON() string { return r.JSON.raw }
-func (r *NodeVms) UnmarshalJSON(data []byte) error {
+func (r NodeVMs) RawJSON() string { return r.JSON.raw }
+func (r *NodeVMs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NodeVmsData struct {
+type NodeVMsData struct {
 	ID        string `json:"id,required"`
 	CreatedAt int64  `json:"created_at,required"`
 	EndAt     int64  `json:"end_at,required"`
@@ -369,8 +369,8 @@ type NodeVmsData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r NodeVmsData) RawJSON() string { return r.JSON.raw }
-func (r *NodeVmsData) UnmarshalJSON(data []byte) error {
+func (r NodeVMsData) RawJSON() string { return r.JSON.raw }
+func (r *NodeVMsData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

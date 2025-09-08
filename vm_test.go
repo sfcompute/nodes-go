@@ -13,7 +13,7 @@ import (
 	"github.com/sfcompute/nodes-go/option"
 )
 
-func TestVmLogsWithOptionalParams(t *testing.T) {
+func TestVMLogsWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,9 +26,9 @@ func TestVmLogsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Vms.Logs(context.TODO(), sfcnodes.VmLogsParams{
+	_, err := client.VMs.Logs(context.TODO(), sfcnodes.VMLogsParams{
 		InstanceID:              "instance_id",
-		OrderBy:                 sfcnodes.VmLogsParamsOrderBySeqnumAsc,
+		OrderBy:                 sfcnodes.VMLogsParamsOrderBySeqnumAsc,
 		BeforeRealtimeTimestamp: sfcnodes.String("before_realtime_timestamp"),
 		BeforeSeqnum:            sfcnodes.Int(0),
 		Limit:                   sfcnodes.Int(1),
@@ -44,7 +44,7 @@ func TestVmLogsWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVmSSH(t *testing.T) {
+func TestVMSSH(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -57,8 +57,8 @@ func TestVmSSH(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Vms.SSH(context.TODO(), sfcnodes.VmSSHParams{
-		VmID: "vm_id",
+	_, err := client.VMs.SSH(context.TODO(), sfcnodes.VMSSHParams{
+		VMID: "vm_id",
 	})
 	if err != nil {
 		var apierr *sfcnodes.Error
