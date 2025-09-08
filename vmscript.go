@@ -14,33 +14,33 @@ import (
 	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
-// VmScriptService contains methods and other services that help with interacting
+// VMScriptService contains methods and other services that help with interacting
 // with the sfc-nodes API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewVmScriptService] method instead.
-type VmScriptService struct {
+// the [NewVMScriptService] method instead.
+type VMScriptService struct {
 	Options []option.RequestOption
 }
 
-// NewVmScriptService generates a new service that applies the given options to
+// NewVMScriptService generates a new service that applies the given options to
 // each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewVmScriptService(opts ...option.RequestOption) (r VmScriptService) {
-	r = VmScriptService{}
+func NewVMScriptService(opts ...option.RequestOption) (r VMScriptService) {
+	r = VMScriptService{}
 	r.Options = opts
 	return
 }
 
-func (r *VmScriptService) New(ctx context.Context, body VmScriptNewParams, opts ...option.RequestOption) (res *VmScriptNewResponse, err error) {
+func (r *VMScriptService) New(ctx context.Context, body VMScriptNewParams, opts ...option.RequestOption) (res *VMScriptNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v0/vms/script"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-func (r *VmScriptService) Get(ctx context.Context, opts ...option.RequestOption) (res *VmScriptGetResponse, err error) {
+func (r *VMScriptService) Get(ctx context.Context, opts ...option.RequestOption) (res *VMScriptGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v0/vms/script"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -117,7 +117,7 @@ func (u *UserDataUnionParam) asAny() any {
 	return nil
 }
 
-type VmScriptNewResponse struct {
+type VMScriptNewResponse struct {
 	// if the script is valid utf8 then the response may be in either string, or byte
 	// form and the client must handle both
 	Script UserDataUnion `json:"script,required"`
@@ -130,12 +130,12 @@ type VmScriptNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VmScriptNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *VmScriptNewResponse) UnmarshalJSON(data []byte) error {
+func (r VMScriptNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *VMScriptNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VmScriptGetResponse struct {
+type VMScriptGetResponse struct {
 	// if the script is valid utf8 then the response may be in either string, or byte
 	// form and the client must handle both
 	Script UserDataUnion `json:"script,required"`
@@ -148,22 +148,22 @@ type VmScriptGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VmScriptGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *VmScriptGetResponse) UnmarshalJSON(data []byte) error {
+func (r VMScriptGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *VMScriptGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VmScriptNewParams struct {
+type VMScriptNewParams struct {
 	// if the script is valid utf8 then the response may be in either string, or byte
 	// form and the client must handle both
 	Script UserDataUnionParam `json:"script,omitzero,required"`
 	paramObj
 }
 
-func (r VmScriptNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow VmScriptNewParams
+func (r VMScriptNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow VMScriptNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *VmScriptNewParams) UnmarshalJSON(data []byte) error {
+func (r *VMScriptNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
