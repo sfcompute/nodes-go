@@ -11,7 +11,6 @@ import (
 	"github.com/sfcompute/nodes-go/internal/apijson"
 	"github.com/sfcompute/nodes-go/internal/requestconfig"
 	"github.com/sfcompute/nodes-go/option"
-	"github.com/sfcompute/nodes-go/packages/param"
 	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
@@ -34,14 +33,11 @@ func NewVMImageService(opts ...option.RequestOption) (r VMImageService) {
 	return
 }
 
-func (r *VMImageService) CompleteUpload(ctx context.Context, imageID string, opts ...option.RequestOption) (res *VMImageCompleteUploadResponse, err error) {
+// List all VM Images for the authenticated account
+func (r *VMImageService) List(ctx context.Context, opts ...option.RequestOption) (res *VMImageListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	if imageID == "" {
-		err = errors.New("missing required image_id parameter")
-		return
-	}
-	path := fmt.Sprintf("v1/vms/images/%s/complete_upload", imageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
+	path := "v1/vms/images"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -57,35 +53,45 @@ func (r *VMImageService) Get(ctx context.Context, imageID string, opts ...option
 	return
 }
 
-func (r *VMImageService) StartUpload(ctx context.Context, body VMImageStartUploadParams, opts ...option.RequestOption) (res *VMImageStartUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "v1/vms/images/start_upload"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+// Response body for listing images
+type VMImageListResponse struct {
+	Data    []VMImageListResponseData `json:"data,required"`
+	HasMore bool                      `json:"has_more,required"`
+	// Any of "list".
+	Object VMImageListResponseObject `json:"object,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		HasMore     respjson.Field
+		Object      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
 }
 
-func (r *VMImageService) Upload(ctx context.Context, imageID string, body VMImageUploadParams, opts ...option.RequestOption) (res *VMImageUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if imageID == "" {
-		err = errors.New("missing required image_id parameter")
-		return
-	}
-	path := fmt.Sprintf("v1/vms/images/%s/upload", imageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+// Returns the unmodified JSON received from the API
+func (r VMImageListResponse) RawJSON() string { return r.JSON.raw }
+func (r *VMImageListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-// Response body for completing a multipart upload
-type VMImageCompleteUploadResponse struct {
+// Response body for individual image info (used in lists)
+type VMImageListResponseData struct {
+	// Creation timestamp as Unix timestamp in seconds
+	CreatedAt int64 `json:"created_at,required"`
 	// The image ID
 	ImageID string `json:"image_id,required"`
+	// Client given name of the image
+	Name string `json:"name,required"`
 	// Any of "image".
-	Object VMImageCompleteUploadResponseObject `json:"object,required"`
-	// Status of the upload verification
+	Object string `json:"object,required"`
+	// Upload status of the image
 	UploadStatus string `json:"upload_status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		CreatedAt    respjson.Field
 		ImageID      respjson.Field
+		Name         respjson.Field
 		Object       respjson.Field
 		UploadStatus respjson.Field
 		ExtraFields  map[string]respjson.Field
@@ -94,15 +100,15 @@ type VMImageCompleteUploadResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VMImageCompleteUploadResponse) RawJSON() string { return r.JSON.raw }
-func (r *VMImageCompleteUploadResponse) UnmarshalJSON(data []byte) error {
+func (r VMImageListResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VMImageListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VMImageCompleteUploadResponseObject string
+type VMImageListResponseObject string
 
 const (
-	VMImageCompleteUploadResponseObjectImage VMImageCompleteUploadResponseObject = "image"
+	VMImageListResponseObjectList VMImageListResponseObject = "list"
 )
 
 // Response body for image download presigned URL generation
@@ -140,79 +146,3 @@ type VMImageGetResponseObject string
 const (
 	VMImageGetResponseObjectImage VMImageGetResponseObject = "image"
 )
-
-// Response body for starting a multipart upload
-type VMImageStartUploadResponse struct {
-	// The image ID for the created image
-	ImageID string `json:"image_id,required"`
-	// Any of "image".
-	Object VMImageStartUploadResponseObject `json:"object,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ImageID     respjson.Field
-		Object      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VMImageStartUploadResponse) RawJSON() string { return r.JSON.raw }
-func (r *VMImageStartUploadResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VMImageStartUploadResponseObject string
-
-const (
-	VMImageStartUploadResponseObjectImage VMImageStartUploadResponseObject = "image"
-)
-
-// Response body for image upload presigned URL generation
-type VMImageUploadResponse struct {
-	// Timestamp when the presigned URL expires (RFC 3339 format)
-	ExpiresAt string `json:"expires_at,required"`
-	// The presigned URL that can be used to upload the image part
-	UploadURL string `json:"upload_url,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExpiresAt   respjson.Field
-		UploadURL   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VMImageUploadResponse) RawJSON() string { return r.JSON.raw }
-func (r *VMImageUploadResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VMImageStartUploadParams struct {
-	// Name of the image file
-	Name string `json:"name,required"`
-	paramObj
-}
-
-func (r VMImageStartUploadParams) MarshalJSON() (data []byte, err error) {
-	type shadow VMImageStartUploadParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *VMImageStartUploadParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VMImageUploadParams struct {
-	// part idx (1-based)
-	PartID int64 `json:"part_id,required"`
-	paramObj
-}
-
-func (r VMImageUploadParams) MarshalJSON() (data []byte, err error) {
-	type shadow VMImageUploadParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *VMImageUploadParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
