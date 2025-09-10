@@ -45,6 +45,7 @@ func (r *VMImageService) CompleteUpload(ctx context.Context, imageID string, opt
 	return
 }
 
+// Get the download URL for a VM image by ID
 func (r *VMImageService) Get(ctx context.Context, imageID string, opts ...option.RequestOption) (res *VMImageGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if imageID == "" {
@@ -108,19 +109,20 @@ const (
 type VMImageGetResponse struct {
 	// The presigned URL that can be used to download the image
 	DownloadURL string `json:"download_url,required"`
-	Etag        string `json:"etag,required"`
 	// Timestamp when the presigned URL expires (RFC 3339 format)
 	ExpiresAt string `json:"expires_at,required"`
 	// The image ID
 	ImageID string `json:"image_id,required"`
+	// Human readable name of the image
+	Name string `json:"name,required"`
 	// Any of "image".
 	Object VMImageGetResponseObject `json:"object,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DownloadURL respjson.Field
-		Etag        respjson.Field
 		ExpiresAt   respjson.Field
 		ImageID     respjson.Field
+		Name        respjson.Field
 		Object      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
