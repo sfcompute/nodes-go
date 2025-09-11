@@ -87,6 +87,8 @@ type VMImageListResponseData struct {
 	Object string `json:"object,required"`
 	// Upload status of the image
 	UploadStatus string `json:"upload_status,required"`
+	// SHA256 hash of the image file for integrity verification
+	Sha256Hash string `json:"sha256_hash,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt    respjson.Field
@@ -94,6 +96,7 @@ type VMImageListResponseData struct {
 		Name         respjson.Field
 		Object       respjson.Field
 		UploadStatus respjson.Field
+		Sha256Hash   respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -123,6 +126,8 @@ type VMImageGetResponse struct {
 	Name string `json:"name,required"`
 	// Any of "image".
 	Object VMImageGetResponseObject `json:"object,required"`
+	// SHA256 hash of the image file for integrity verification
+	Sha256Hash string `json:"sha256_hash,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DownloadURL respjson.Field
@@ -130,6 +135,7 @@ type VMImageGetResponse struct {
 		ImageID     respjson.Field
 		Name        respjson.Field
 		Object      respjson.Field
+		Sha256Hash  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
