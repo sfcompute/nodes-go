@@ -33,6 +33,7 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 			Zone:                "hayesvalley",
 			CloudInitUserData:   []int64{0},
 			EndAt:               sfcnodes.Int(0),
+			ImageID:             sfcnodes.String("vmi_1234567890abcdef"),
 			Names:               []string{"cuda-crunch"},
 			NodeType:            sfcnodes.NodeTypeAutoreserved,
 			StartAt:             sfcnodes.Int(1640995200),

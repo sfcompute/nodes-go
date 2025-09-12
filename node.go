@@ -108,6 +108,8 @@ type CreateNodesRequestParam struct {
 	// End time as Unix timestamp in seconds. If provided, end time must be aligned to
 	// the hour. If not provided, the node will be created as an autoreserved node.
 	EndAt param.Opt[int64] `json:"end_at,omitzero"`
+	// Custom image ID to use for the VM instances
+	ImageID param.Opt[string] `json:"image_id,omitzero"`
 	// Start time as Unix timestamp in seconds
 	StartAt param.Opt[int64] `json:"start_at,omitzero"`
 	// User script to be executed during the VM's boot process
