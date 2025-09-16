@@ -251,6 +251,7 @@ type ListResponseNodeDataVMsData struct {
 	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
 	Status    string `json:"status,required"`
 	UpdatedAt int64  `json:"updated_at,required"`
+	ImageID   string `json:"image_id,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -260,6 +261,7 @@ type ListResponseNodeDataVMsData struct {
 		StartAt     respjson.Field
 		Status      respjson.Field
 		UpdatedAt   respjson.Field
+		ImageID     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -356,6 +358,7 @@ type NodeVMsData struct {
 	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
 	Status    string `json:"status,required"`
 	UpdatedAt int64  `json:"updated_at,required"`
+	ImageID   string `json:"image_id,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -365,6 +368,7 @@ type NodeVMsData struct {
 		StartAt     respjson.Field
 		Status      respjson.Field
 		UpdatedAt   respjson.Field
+		ImageID     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
