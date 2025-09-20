@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 
 	"github.com/sfcompute/nodes-go/internal/apijson"
 	"github.com/sfcompute/nodes-go/internal/requestconfig"
@@ -34,14 +35,14 @@ func NewVMScriptService(opts ...option.RequestOption) (r VMScriptService) {
 }
 
 func (r *VMScriptService) New(ctx context.Context, body VMScriptNewParams, opts ...option.RequestOption) (res *VMScriptNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/script"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 func (r *VMScriptService) Get(ctx context.Context, opts ...option.RequestOption) (res *VMScriptGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/script"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

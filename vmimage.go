@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/sfcompute/nodes-go/internal/apijson"
 	"github.com/sfcompute/nodes-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewVMImageService(opts ...option.RequestOption) (r VMImageService) {
 
 // List all VM Images for the authenticated account
 func (r *VMImageService) List(ctx context.Context, opts ...option.RequestOption) (res *VMImageListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/vms/images"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -43,7 +44,7 @@ func (r *VMImageService) List(ctx context.Context, opts ...option.RequestOption)
 
 // Get the download URL for a VM image by ID
 func (r *VMImageService) Get(ctx context.Context, imageID string, opts ...option.RequestOption) (res *VMImageGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if imageID == "" {
 		err = errors.New("missing required image_id parameter")
 		return
