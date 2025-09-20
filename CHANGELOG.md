@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.1.0-alpha.3 (2025-09-20)
+
+Full Changelog: [v0.1.0-alpha.2...v0.1.0-alpha.3](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.2...v0.1.0-alpha.3)
+
+### Features
+
+* **api:** add vm images resources and update formatting ([273c45f](https://github.com/sfcompute/nodes-go/commit/273c45f75e75104ad10eb1eab1bdb7acc3596cce))
+* **api:** api update ([97607e0](https://github.com/sfcompute/nodes-go/commit/97607e02d439b4fe1463a483d362ab5bf65fd708))
+* **api:** api update ([5788fb0](https://github.com/sfcompute/nodes-go/commit/5788fb0d297e3c4f79e76e1f2369bd086dad610b))
+* **api:** api update ([59b16bc](https://github.com/sfcompute/nodes-go/commit/59b16bcc748ffea703644d6332f33a79196aeeee))
+* **api:** api update ([d9c2daa](https://github.com/sfcompute/nodes-go/commit/d9c2daa0151d664a5bbff0609d0a6e1e6db3b8c8))
+* **api:** disable retries ([8c19a86](https://github.com/sfcompute/nodes-go/commit/8c19a865b584b8dc40feecd1a26e3d8d9a013230))
+
+
+### Bug Fixes
+
+* **api:** remove undocumented endpoints, add list endpoint ([ee795ee](https://github.com/sfcompute/nodes-go/commit/ee795ee93f88b5c379d9ce834356c59fae43e162))
+* **internal:** unmarshal correctly when there are multiple discriminators ([2836b68](https://github.com/sfcompute/nodes-go/commit/2836b6828c5f60e8c0c4e8892bbefa54e54b64b8))
+* use slices.Concat instead of sometimes modifying r.Options ([6adf0a1](https://github.com/sfcompute/nodes-go/commit/6adf0a14ecd1b5d20924b1b26816af8c5ed270ad))
+
+
+### Chores
+
+* bump minimum go version to 1.22 ([90c5664](https://github.com/sfcompute/nodes-go/commit/90c566457cad4e6964d6217feeb21eb699d2c385))
+* do not install brew dependencies in ./scripts/bootstrap by default ([5983889](https://github.com/sfcompute/nodes-go/commit/5983889bfd8681434b39372a0d58fe60115ff267))
+* update more docs for 1.22 ([82733b2](https://github.com/sfcompute/nodes-go/commit/82733b2eff62084fa0b0e415e8a3ad6e1f8f546c))
+
 ## 0.1.0-alpha.2 (2025-09-05)
 
 Full Changelog: [v0.1.0-alpha.1...v0.1.0-alpha.2](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.1...v0.1.0-alpha.2)
