@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/sfcompute/nodes-go/internal/apijson"
 	"github.com/sfcompute/nodes-go/internal/apiquery"
@@ -39,14 +40,14 @@ func NewVMService(opts ...option.RequestOption) (r VMService) {
 }
 
 func (r *VMService) Logs(ctx context.Context, query VMLogsParams, opts ...option.RequestOption) (res *VMLogsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/logs2"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
 func (r *VMService) SSH(ctx context.Context, query VMSSHParams, opts ...option.RequestOption) (res *VmsshResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/ssh"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

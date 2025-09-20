@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/sfcompute/nodes-go/internal/apijson"
 	"github.com/sfcompute/nodes-go/internal/apiquery"
@@ -40,7 +41,7 @@ func NewNodeService(opts ...option.RequestOption) (r NodeService) {
 
 // Create VM nodes
 func (r *NodeService) New(ctx context.Context, body NodeNewParams, opts ...option.RequestOption) (res *ListResponseNode, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/nodes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *NodeService) New(ctx context.Context, body NodeNewParams, opts ...optio
 
 // List all VM nodes for the authenticated account
 func (r *NodeService) List(ctx context.Context, query NodeListParams, opts ...option.RequestOption) (res *ListResponseNode, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/nodes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -56,7 +57,7 @@ func (r *NodeService) List(ctx context.Context, query NodeListParams, opts ...op
 
 // Purchase additional time to extend the end time of a reserved VM node
 func (r *NodeService) Extend(ctx context.Context, id string, body NodeExtendParams, opts ...option.RequestOption) (res *Node, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *NodeService) Extend(ctx context.Context, id string, body NodeExtendPara
 
 // Retrieve details of a specific node by its ID or name
 func (r *NodeService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *Node, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *NodeService) Get(ctx context.Context, id string, opts ...option.Request
 // Release an auto reserved VM node from its procurement, reducing the
 // procurement's desired quantity by 1
 func (r *NodeService) Release(ctx context.Context, id string, opts ...option.RequestOption) (res *Node, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
