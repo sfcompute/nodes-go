@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/sfcompute/nodes-go/internal/apijson"
 	"github.com/sfcompute/nodes-go/internal/apiquery"
@@ -15,43 +16,45 @@ import (
 	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
-// VmService contains methods and other services that help with interacting with
+// VMService contains methods and other services that help with interacting with
 // the sfc-nodes API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewVmService] method instead.
-type VmService struct {
+// the [NewVMService] method instead.
+type VMService struct {
 	Options []option.RequestOption
-	Script  VmScriptService
+	Script  VMScriptService
+	Images  VMImageService
 }
 
-// NewVmService generates a new service that applies the given options to each
+// NewVMService generates a new service that applies the given options to each
 // request. These options are applied after the parent client's options (if there
 // is one), and before any request-specific options.
-func NewVmService(opts ...option.RequestOption) (r VmService) {
-	r = VmService{}
+func NewVMService(opts ...option.RequestOption) (r VMService) {
+	r = VMService{}
 	r.Options = opts
-	r.Script = NewVmScriptService(opts...)
+	r.Script = NewVMScriptService(opts...)
+	r.Images = NewVMImageService(opts...)
 	return
 }
 
-func (r *VmService) Logs(ctx context.Context, query VmLogsParams, opts ...option.RequestOption) (res *VmLogsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+func (r *VMService) Logs(ctx context.Context, query VMLogsParams, opts ...option.RequestOption) (res *VMLogsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/logs2"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
-func (r *VmService) SSH(ctx context.Context, query VmSSHParams, opts ...option.RequestOption) (res *VmSSHResponse, err error) {
-	opts = append(r.Options[:], opts...)
+func (r *VMService) SSH(ctx context.Context, query VMSSHParams, opts ...option.RequestOption) (res *VmsshResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/ssh"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
-type VmLogsResponse struct {
-	Data []VmLogsResponseData `json:"data,required"`
+type VMLogsResponse struct {
+	Data []VMLogsResponseData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -61,12 +64,12 @@ type VmLogsResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VmLogsResponse) RawJSON() string { return r.JSON.raw }
-func (r *VmLogsResponse) UnmarshalJSON(data []byte) error {
+func (r VMLogsResponse) RawJSON() string { return r.JSON.raw }
+func (r *VMLogsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VmLogsResponseData struct {
+type VMLogsResponseData struct {
 	Data                      []int64 `json:"data,required"`
 	InstanceID                string  `json:"instance_id,required"`
 	MonotonicTimestampNanoSec int64   `json:"monotonic_timestamp_nano_sec,required"`
@@ -88,15 +91,15 @@ type VmLogsResponseData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VmLogsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *VmLogsResponseData) UnmarshalJSON(data []byte) error {
+func (r VMLogsResponseData) RawJSON() string { return r.JSON.raw }
+func (r *VMLogsResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VmSSHResponse struct {
+type VmsshResponse struct {
 	SSHHostname string                    `json:"ssh_hostname,required"`
 	SSHPort     int64                     `json:"ssh_port,required"`
-	SSHHostKeys []VmSSHResponseSSHHostKey `json:"ssh_host_keys,nullable"`
+	SSHHostKeys []VmsshResponseSSHHostKey `json:"ssh_host_keys,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SSHHostname respjson.Field
@@ -108,12 +111,12 @@ type VmSSHResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VmSSHResponse) RawJSON() string { return r.JSON.raw }
-func (r *VmSSHResponse) UnmarshalJSON(data []byte) error {
+func (r VmsshResponse) RawJSON() string { return r.JSON.raw }
+func (r *VmsshResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VmSSHResponseSSHHostKey struct {
+type VmsshResponseSSHHostKey struct {
 	Base64EncodedKey string `json:"base64_encoded_key,required"`
 	KeyType          string `json:"key_type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -126,15 +129,15 @@ type VmSSHResponseSSHHostKey struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VmSSHResponseSSHHostKey) RawJSON() string { return r.JSON.raw }
-func (r *VmSSHResponseSSHHostKey) UnmarshalJSON(data []byte) error {
+func (r VmsshResponseSSHHostKey) RawJSON() string { return r.JSON.raw }
+func (r *VmsshResponseSSHHostKey) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VmLogsParams struct {
+type VMLogsParams struct {
 	InstanceID string `query:"instance_id,required" json:"-"`
 	// Any of "seqnum_asc", "seqnum_desc".
-	OrderBy                 VmLogsParamsOrderBy `query:"order_by,omitzero,required" json:"-"`
+	OrderBy                 VMLogsParamsOrderBy `query:"order_by,omitzero,required" json:"-"`
 	BeforeRealtimeTimestamp param.Opt[string]   `query:"before_realtime_timestamp,omitzero" json:"-"`
 	BeforeSeqnum            param.Opt[int64]    `query:"before_seqnum,omitzero" json:"-"`
 	Limit                   param.Opt[int64]    `query:"limit,omitzero" json:"-"`
@@ -143,28 +146,28 @@ type VmLogsParams struct {
 	paramObj
 }
 
-// URLQuery serializes [VmLogsParams]'s query parameters as `url.Values`.
-func (r VmLogsParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [VMLogsParams]'s query parameters as `url.Values`.
+func (r VMLogsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type VmLogsParamsOrderBy string
+type VMLogsParamsOrderBy string
 
 const (
-	VmLogsParamsOrderBySeqnumAsc  VmLogsParamsOrderBy = "seqnum_asc"
-	VmLogsParamsOrderBySeqnumDesc VmLogsParamsOrderBy = "seqnum_desc"
+	VMLogsParamsOrderBySeqnumAsc  VMLogsParamsOrderBy = "seqnum_asc"
+	VMLogsParamsOrderBySeqnumDesc VMLogsParamsOrderBy = "seqnum_desc"
 )
 
-type VmSSHParams struct {
-	VmID string `query:"vm_id,required" json:"-"`
+type VMSSHParams struct {
+	VMID string `query:"vm_id,required" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [VmSSHParams]'s query parameters as `url.Values`.
-func (r VmSSHParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [VMSSHParams]'s query parameters as `url.Values`.
+func (r VMSSHParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

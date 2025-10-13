@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"slices"
 
 	"github.com/sfcompute/nodes-go/internal/requestconfig"
 	"github.com/sfcompute/nodes-go/option"
@@ -16,7 +17,7 @@ import (
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
 	Options []option.RequestOption
-	Vms     VmService
+	VMs     VMService
 	Nodes   NodeService
 }
 
@@ -42,7 +43,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
-	r.Vms = NewVmService(opts...)
+	r.VMs = NewVMService(opts...)
 	r.Nodes = NewNodeService(opts...)
 
 	return
@@ -80,7 +81,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 // For even greater flexibility, see [option.WithResponseInto] and
 // [option.WithResponseBodyInto].
 func (r *Client) Execute(ctx context.Context, method string, path string, params any, res any, opts ...option.RequestOption) error {
-	opts = append(r.Options, opts...)
+	opts = slices.Concat(r.Options, opts)
 	return requestconfig.ExecuteNewRequest(ctx, method, path, params, res, opts...)
 }
 

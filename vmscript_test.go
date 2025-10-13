@@ -13,7 +13,7 @@ import (
 	"github.com/sfcompute/nodes-go/option"
 )
 
-func TestVmScriptNew(t *testing.T) {
+func TestVMScriptNew(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestVmScriptNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Vms.Script.New(context.TODO(), sfcnodes.VmScriptNewParams{
+	_, err := client.VMs.Script.New(context.TODO(), sfcnodes.VMScriptNewParams{
 		Script: sfcnodes.UserDataUnionParam{
 			OfString: sfcnodes.String("string"),
 		},
@@ -40,7 +40,7 @@ func TestVmScriptNew(t *testing.T) {
 	}
 }
 
-func TestVmScriptGet(t *testing.T) {
+func TestVMScriptGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -53,7 +53,7 @@ func TestVmScriptGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Vms.Script.Get(context.TODO())
+	_, err := client.VMs.Script.Get(context.TODO())
 	if err != nil {
 		var apierr *sfcnodes.Error
 		if errors.As(err, &apierr) {

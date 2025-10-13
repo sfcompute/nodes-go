@@ -31,8 +31,9 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 			DesiredCount:        1,
 			MaxPricePerNodeHour: 1000,
 			Zone:                "hayesvalley",
-			CloudInitUserData:   []int64{0},
+			CloudInitUserData:   sfcnodes.String("aGVsbG8gd29ybGQ="),
 			EndAt:               sfcnodes.Int(0),
+			ImageID:             sfcnodes.String("vmi_1234567890abcdef"),
 			Names:               []string{"cuda-crunch"},
 			NodeType:            sfcnodes.NodeTypeAutoreserved,
 			StartAt:             sfcnodes.Int(1640995200),
@@ -63,7 +64,31 @@ func TestNodeListWithOptionalParams(t *testing.T) {
 	_, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{
 		ID:   []string{"string"},
 		Name: []string{"string"},
+		Type: sfcnodes.NodeTypeAutoreserved,
 	})
+	if err != nil {
+		var apierr *sfcnodes.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestNodeDelete(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := sfcnodes.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	err := client.Nodes.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *sfcnodes.Error
 		if errors.As(err, &apierr) {
@@ -119,6 +144,37 @@ func TestNodeGet(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.Nodes.Get(context.TODO(), "id")
+	if err != nil {
+		var apierr *sfcnodes.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestNodeRedeployWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := sfcnodes.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithBearerToken("My Bearer Token"),
+	)
+	_, err := client.Nodes.Redeploy(
+		context.TODO(),
+		"id",
+		sfcnodes.NodeRedeployParams{
+			CloudInitUserData: sfcnodes.String("aGVsbG8gd29ybGQ="),
+			ImageID:           sfcnodes.String("vmi_1234567890abcdef"),
+			OverrideEmpty:     sfcnodes.Bool(true),
+		},
+	)
 	if err != nil {
 		var apierr *sfcnodes.Error
 		if errors.As(err, &apierr) {

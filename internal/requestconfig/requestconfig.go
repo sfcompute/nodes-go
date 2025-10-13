@@ -164,7 +164,7 @@ func NewRequestConfig(ctx context.Context, method string, u string, body any, ds
 		req.Header.Add(k, v)
 	}
 	cfg := RequestConfig{
-		MaxRetries: 2,
+		MaxRetries: 0,
 		Context:    ctx,
 		Request:    req,
 		HTTPClient: http.DefaultClient,

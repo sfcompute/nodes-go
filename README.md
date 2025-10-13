@@ -28,14 +28,14 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/sfcompute/nodes-go@v0.1.0-alpha.2'
+go get -u 'github.com/sfcompute/nodes-go@v0.1.0-alpha.3'
 ```
 
 <!-- x-release-please-end -->
 
 ## Requirements
 
-This library requires Go 1.18+.
+This library requires Go 1.22+.
 
 ## Usage
 
@@ -345,7 +345,7 @@ which can be used to wrap any `io.Reader` with the appropriate file name and con
 
 ### Retries
 
-Certain errors will be automatically retried 2 times by default, with a short exponential backoff.
+Certain errors will be automatically retried 0 times by default, with a short exponential backoff.
 We retry by default all connection errors, 408 Request Timeout, 409 Conflict, 429 Rate Limit,
 and >=500 Internal errors.
 
