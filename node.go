@@ -140,10 +140,12 @@ type CreateNodesRequestParam struct {
 	CloudInitUserData param.Opt[string] `json:"cloud_init_user_data,omitzero" format:"byte"`
 	// Custom image ID to use for the VM instances
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
-	// Start time as Unix timestamp in seconds Required for reserved nodes
+	// Start time as Unix timestamp in seconds Optional for reserved nodes. If not
+	// provided, defaults to current time
 	StartAt param.Opt[int64] `json:"start_at,omitzero"`
-	// Custom node names Names cannot follow the vm\_{alpha_numeric_chars} as this is
-	// reserved for system-generated IDs Names cannot be numeric strings
+	// Custom node names Names cannot begin with 'vm*' or 'n*' as this is reserved for
+	// system-generated IDs Names cannot be numeric strings Names cannot exceed 128
+	// characters
 	Names []string `json:"names,omitzero"`
 	// Any of "autoreserved", "reserved".
 	NodeType NodeType `json:"node_type,omitzero"`
