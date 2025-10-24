@@ -141,7 +141,7 @@ type CreateNodesRequestParam struct {
 	// Custom image ID to use for the VM instances
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
 	// Start time as Unix timestamp in seconds Optional for reserved nodes. If not
-	// provided, defaults to current time
+	// provided, defaults to now
 	StartAt param.Opt[int64] `json:"start_at,omitzero"`
 	// Custom node names Names cannot begin with 'vm*' or 'n*' as this is reserved for
 	// system-generated IDs Names cannot be numeric strings Names cannot exceed 128
