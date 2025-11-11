@@ -82,7 +82,7 @@ type VMImageListResponseData struct {
 	CreatedAt int64 `json:"created_at,required"`
 	// The image ID
 	ImageID string `json:"image_id,required"`
-	// Client given name of the image
+	// Client given name of the image. Must be unique per account.
 	Name string `json:"name,required"`
 	// Any of "image".
 	Object string `json:"object,required"`
@@ -123,7 +123,7 @@ type VMImageGetResponse struct {
 	ExpiresAt string `json:"expires_at,required"`
 	// The image ID
 	ImageID string `json:"image_id,required"`
-	// Human readable name of the image
+	// Human readable name of the image. Must be unique per account.
 	Name string `json:"name,required"`
 	// Any of "image".
 	Object VMImageGetResponseObject `json:"object,required"`
