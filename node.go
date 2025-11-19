@@ -58,7 +58,7 @@ func (r *NodeService) List(ctx context.Context, query NodeListParams, opts ...op
 // Delete a node by id. The node cannot be deleted if it has active or pending VMs.
 func (r *NodeService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
