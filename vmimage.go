@@ -82,7 +82,7 @@ type VMImageListResponseData struct {
 	CreatedAt int64 `json:"created_at,required"`
 	// The image ID
 	ImageID string `json:"image_id,required"`
-	// Client given name of the image
+	// Client given name of the image. Must be unique per account.
 	Name string `json:"name,required"`
 	// Any of "image".
 	Object string `json:"object,required"`
@@ -123,10 +123,12 @@ type VMImageGetResponse struct {
 	ExpiresAt string `json:"expires_at,required"`
 	// The image ID
 	ImageID string `json:"image_id,required"`
-	// Human readable name of the image
+	// Human readable name of the image. Must be unique per account.
 	Name string `json:"name,required"`
 	// Any of "image".
 	Object VMImageGetResponseObject `json:"object,required"`
+	// Size of the image file in bytes
+	ObjectSize int64 `json:"object_size,required"`
 	// SHA256 hash of the image file for integrity verification
 	Sha256Hash string `json:"sha256_hash,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -136,6 +138,7 @@ type VMImageGetResponse struct {
 		ImageID     respjson.Field
 		Name        respjson.Field
 		Object      respjson.Field
+		ObjectSize  respjson.Field
 		Sha256Hash  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string

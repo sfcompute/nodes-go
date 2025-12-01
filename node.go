@@ -58,7 +58,7 @@ func (r *NodeService) List(ctx context.Context, query NodeListParams, opts ...op
 // Delete a node by id. The node cannot be deleted if it has active or pending VMs.
 func (r *NodeService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -140,10 +140,12 @@ type CreateNodesRequestParam struct {
 	CloudInitUserData param.Opt[string] `json:"cloud_init_user_data,omitzero" format:"byte"`
 	// Custom image ID to use for the VM instances
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
-	// Start time as Unix timestamp in seconds Required for reserved nodes
+	// Start time as Unix timestamp in seconds Optional for reserved nodes. If not
+	// provided, defaults to now
 	StartAt param.Opt[int64] `json:"start_at,omitzero"`
-	// Custom node names Names cannot follow the vm\_{alpha_numeric_chars} as this is
-	// reserved for system-generated IDs Names cannot be numeric strings
+	// Custom node names Names cannot begin with 'vm*' or 'n*' as this is reserved for
+	// system-generated IDs Names cannot be numeric strings Names cannot exceed 128
+	// characters
 	Names []string `json:"names,omitzero"`
 	// Any of "autoreserved", "reserved".
 	NodeType NodeType `json:"node_type,omitzero"`

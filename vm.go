@@ -97,16 +97,22 @@ func (r *VMLogsResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type VmsshResponse struct {
-	SSHHostname string                    `json:"ssh_hostname,required"`
-	SSHPort     int64                     `json:"ssh_port,required"`
-	SSHHostKeys []VmsshResponseSSHHostKey `json:"ssh_host_keys,nullable"`
+	SSHHostname string `json:"ssh_hostname,required"`
+	SSHPort     int64  `json:"ssh_port,required"`
+	// Unix timestamp in seconds since epoch
+	LastAttemptedKeyUpdate int64 `json:"last_attempted_key_update,nullable"`
+	// Unix timestamp in seconds since epoch
+	LastSuccessfulKeyUpdate int64                     `json:"last_successful_key_update,nullable"`
+	SSHHostKeys             []VmsshResponseSSHHostKey `json:"ssh_host_keys,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		SSHHostname respjson.Field
-		SSHPort     respjson.Field
-		SSHHostKeys respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		SSHHostname             respjson.Field
+		SSHPort                 respjson.Field
+		LastAttemptedKeyUpdate  respjson.Field
+		LastSuccessfulKeyUpdate respjson.Field
+		SSHHostKeys             respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
@@ -117,7 +123,7 @@ func (r *VmsshResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VmsshResponseSSHHostKey struct {
-	Base64EncodedKey string `json:"base64_encoded_key,required"`
+	Base64EncodedKey string `json:"base64_encoded_key,required" format:"byte"`
 	KeyType          string `json:"key_type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

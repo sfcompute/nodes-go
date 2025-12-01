@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.1.0-alpha.4 (2025-12-01)
+
+Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
+
+### Features
+
+* **api:** add .zones SDK methods ([7d0d7e8](https://github.com/sfcompute/nodes-go/commit/7d0d7e8e8c2902b64ac32afc36c9ab3c2d759c3f))
+* **api:** api update ([9f94ea5](https://github.com/sfcompute/nodes-go/commit/9f94ea57dcaabbec647d257634ee5c550bfe823b))
+* **api:** api update ([1342c39](https://github.com/sfcompute/nodes-go/commit/1342c3989b487bd7725ab95ba720c7da200c6899))
+* **api:** api update ([02e6349](https://github.com/sfcompute/nodes-go/commit/02e6349b1823ed96fecf3353231e32b00ef3989b))
+* **api:** api update ([26ba165](https://github.com/sfcompute/nodes-go/commit/26ba165c4e22a00f69c89f53edf7b0445057594f))
+
+
+### Bug Fixes
+
+* **client:** correctly specify Accept header with */* instead of empty ([02ed3d4](https://github.com/sfcompute/nodes-go/commit/02ed3d4181ab9b9c97e85fb3dd0b9ded24489f40))
+
+
+### Chores
+
+* bump gjson version ([4190bc4](https://github.com/sfcompute/nodes-go/commit/4190bc4b5cf17ed7fda70ff9e8ccab34eb33d477))
+* **internal:** codegen related update ([766d0aa](https://github.com/sfcompute/nodes-go/commit/766d0aaf277f7c0733d15ba33111d5e9519660a8))
+* **internal:** grammar fix (it's -&gt; its) ([1a198ba](https://github.com/sfcompute/nodes-go/commit/1a198bad6aa4689cecfaccec1953310a60a1a47c))
+
 ## 0.1.0-alpha.3 (2025-10-13)
 
 Full Changelog: [v0.1.0-alpha.2...v0.1.0-alpha.3](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.2...v0.1.0-alpha.3)

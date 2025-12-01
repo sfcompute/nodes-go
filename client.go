@@ -19,6 +19,7 @@ type Client struct {
 	Options []option.RequestOption
 	VMs     VMService
 	Nodes   NodeService
+	Zones   ZoneService
 }
 
 // DefaultClientOptions read from the environment (SFC_NODES_BEARER_TOKEN,
@@ -45,6 +46,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r.VMs = NewVMService(opts...)
 	r.Nodes = NewNodeService(opts...)
+	r.Zones = NewZoneService(opts...)
 
 	return
 }
