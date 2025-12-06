@@ -125,16 +125,16 @@ const (
 	AcceleratorTypeH200 AcceleratorType = "H200"
 )
 
-// The properties DesiredCount, MaxPricePerNodeHour, Zone are required.
+// The properties DesiredCount, MaxPricePerNodeHour are required.
 type CreateNodesRequestParam struct {
 	DesiredCount int64 `json:"desired_count,required"`
 	// Max price per hour for a node in cents
 	MaxPricePerNodeHour int64 `json:"max_price_per_node_hour,required"`
-	// Zone to create the nodes in
-	Zone string `json:"zone,required"`
 	// End time as Unix timestamp in seconds If provided, end time must be aligned to
 	// the hour If not provided, the node will be created as an autoreserved node
 	EndAt param.Opt[int64] `json:"end_at,omitzero"`
+	// Allow auto reserved nodes to be created in any zone that meets the requirements
+	AnyZone param.Opt[bool] `json:"any_zone,omitzero"`
 	// User script to be executed during the VM's boot process Data should be base64
 	// encoded
 	CloudInitUserData param.Opt[string] `json:"cloud_init_user_data,omitzero" format:"byte"`
@@ -143,6 +143,9 @@ type CreateNodesRequestParam struct {
 	// Start time as Unix timestamp in seconds Optional for reserved nodes. If not
 	// provided, defaults to now
 	StartAt param.Opt[int64] `json:"start_at,omitzero"`
+	// Zone to create the nodes in. Required for auto reserved nodes if any_zone is
+	// false.
+	Zone param.Opt[string] `json:"zone,omitzero"`
 	// Custom node names Names cannot begin with 'vm*' or 'n*' as this is reserved for
 	// system-generated IDs Names cannot be numeric strings Names cannot exceed 128
 	// characters
@@ -265,6 +268,7 @@ type ListResponseNodeDataCurrentVM struct {
 	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
 	Status    string `json:"status,required"`
 	UpdatedAt int64  `json:"updated_at,required"`
+	Zone      string `json:"zone,required"`
 	ImageID   string `json:"image_id,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -275,6 +279,7 @@ type ListResponseNodeDataCurrentVM struct {
 		StartAt     respjson.Field
 		Status      respjson.Field
 		UpdatedAt   respjson.Field
+		Zone        respjson.Field
 		ImageID     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -314,6 +319,7 @@ type ListResponseNodeDataVMsData struct {
 	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
 	Status    string `json:"status,required"`
 	UpdatedAt int64  `json:"updated_at,required"`
+	Zone      string `json:"zone,required"`
 	ImageID   string `json:"image_id,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -324,6 +330,7 @@ type ListResponseNodeDataVMsData struct {
 		StartAt     respjson.Field
 		Status      respjson.Field
 		UpdatedAt   respjson.Field
+		Zone        respjson.Field
 		ImageID     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -405,6 +412,7 @@ type NodeCurrentVM struct {
 	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
 	Status    string `json:"status,required"`
 	UpdatedAt int64  `json:"updated_at,required"`
+	Zone      string `json:"zone,required"`
 	ImageID   string `json:"image_id,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -415,6 +423,7 @@ type NodeCurrentVM struct {
 		StartAt     respjson.Field
 		Status      respjson.Field
 		UpdatedAt   respjson.Field
+		Zone        respjson.Field
 		ImageID     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -454,6 +463,7 @@ type NodeVMsData struct {
 	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
 	Status    string `json:"status,required"`
 	UpdatedAt int64  `json:"updated_at,required"`
+	Zone      string `json:"zone,required"`
 	ImageID   string `json:"image_id,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -464,6 +474,7 @@ type NodeVMsData struct {
 		StartAt     respjson.Field
 		Status      respjson.Field
 		UpdatedAt   respjson.Field
+		Zone        respjson.Field
 		ImageID     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
