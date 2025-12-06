@@ -30,13 +30,14 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 		CreateNodesRequest: sfcnodes.CreateNodesRequestParam{
 			DesiredCount:        1,
 			MaxPricePerNodeHour: 1000,
-			Zone:                "hayesvalley",
+			AnyZone:             sfcnodes.Bool(false),
 			CloudInitUserData:   sfcnodes.String("aGVsbG8gd29ybGQ="),
 			EndAt:               sfcnodes.Int(0),
 			ImageID:             sfcnodes.String("vmi_1234567890abcdef"),
 			Names:               []string{"cuda-crunch"},
 			NodeType:            sfcnodes.NodeTypeAutoreserved,
 			StartAt:             sfcnodes.Int(1640995200),
+			Zone:                sfcnodes.String("hayesvalley"),
 		},
 	})
 	if err != nil {
