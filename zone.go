@@ -86,6 +86,8 @@ type ZoneListResponseData struct {
 	Object           string `json:"object,required"`
 	// Any of "NorthAmerica", "AsiaPacific", "EuropeMiddleEastAfrica".
 	Region string `json:"region,required"`
+	// User-facing zone name (e.g., "Hayes Valley", "Land's End")
+	DisplayName string `json:"display_name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AvailableCapacity respjson.Field
@@ -95,6 +97,7 @@ type ZoneListResponseData struct {
 		Name              respjson.Field
 		Object            respjson.Field
 		Region            respjson.Field
+		DisplayName       respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
@@ -143,6 +146,8 @@ type ZoneGetResponse struct {
 	Object           string                          `json:"object,required"`
 	// Any of "NorthAmerica", "AsiaPacific", "EuropeMiddleEastAfrica".
 	Region ZoneGetResponseRegion `json:"region,required"`
+	// User-facing zone name (e.g., "Hayes Valley", "Land's End")
+	DisplayName string `json:"display_name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AvailableCapacity respjson.Field
@@ -152,6 +157,7 @@ type ZoneGetResponse struct {
 		Name              respjson.Field
 		Object            respjson.Field
 		Region            respjson.Field
+		DisplayName       respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
