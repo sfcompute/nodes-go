@@ -138,6 +138,8 @@ type CreateNodesRequestParam struct {
 	// User script to be executed during the VM's boot process Data should be base64
 	// encoded
 	CloudInitUserData param.Opt[string] `json:"cloud_init_user_data,omitzero" format:"byte"`
+	// (Optional) If set, enables forwarding to the VM on port 443.
+	Forward443 param.Opt[bool] `json:"forward_443,omitzero"`
 	// Custom image ID to use for the VM instances
 	ImageID param.Opt[string] `json:"image_id,omitzero"`
 	// Start time as Unix timestamp in seconds Optional for reserved nodes. If not

@@ -33,6 +33,7 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 			AnyZone:             sfcnodes.Bool(false),
 			CloudInitUserData:   sfcnodes.String("aGVsbG8gd29ybGQ="),
 			EndAt:               sfcnodes.Int(0),
+			Forward443:          sfcnodes.Bool(false),
 			ImageID:             sfcnodes.String("vmi_1234567890abcdef"),
 			Names:               []string{"cuda-crunch"},
 			NodeType:            sfcnodes.NodeTypeAutoreserved,
