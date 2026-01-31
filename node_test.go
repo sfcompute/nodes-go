@@ -29,7 +29,7 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 	_, err := client.Nodes.New(context.TODO(), sfcnodes.NodeNewParams{
 		CreateNodesRequest: sfcnodes.CreateNodesRequestParam{
 			DesiredCount:        1,
-			MaxPricePerNodeHour: 1000,
+			MaxPricePerNodeHour: 1600,
 			AnyZone:             sfcnodes.Bool(false),
 			CloudInitUserData:   sfcnodes.String("aGVsbG8gd29ybGQ="),
 			EndAt:               sfcnodes.Int(0),
