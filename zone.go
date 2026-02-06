@@ -86,7 +86,7 @@ type ZoneListResponseData struct {
 	Object           string `json:"object,required"`
 	// Any of "NorthAmerica", "AsiaPacific", "EuropeMiddleEastAfrica".
 	Region string `json:"region,required"`
-	// User-facing zone name (e.g., "Hayes Valley", "Lands End")
+	// User-facing zone name (e.g., "Hayes Valley", "Land's End")
 	DisplayName string `json:"display_name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -146,7 +146,7 @@ type ZoneGetResponse struct {
 	Object           string                          `json:"object,required"`
 	// Any of "NorthAmerica", "AsiaPacific", "EuropeMiddleEastAfrica".
 	Region ZoneGetResponseRegion `json:"region,required"`
-	// User-facing zone name (e.g., "Hayes Valley", "Lands End")
+	// User-facing zone name (e.g., "Hayes Valley", "Land's End")
 	DisplayName string `json:"display_name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
