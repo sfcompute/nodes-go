@@ -54,16 +54,13 @@ func (r *VMImageService) Get(ctx context.Context, imageID string, opts ...option
 	return
 }
 
-// Response body for listing images
 type VMImageListResponse struct {
-	Data    []VMImageListResponseData `json:"data,required"`
-	HasMore bool                      `json:"has_more,required"`
+	Data []VMImageListResponseData `json:"data,required"`
 	// Any of "list".
 	Object VMImageListResponseObject `json:"object,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
-		HasMore     respjson.Field
 		Object      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -76,27 +73,22 @@ func (r *VMImageListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Response body for individual image info (used in lists)
 type VMImageListResponseData struct {
-	// Creation timestamp as Unix timestamp in seconds
-	CreatedAt int64 `json:"created_at,required"`
-	// The image ID
-	ImageID string `json:"image_id,required"`
-	// Client given name of the image. Must be unique per account.
-	Name string `json:"name,required"`
-	// Any of "image".
-	Object string `json:"object,required"`
-	// Upload status of the image
+	ID string `json:"id,required"`
+	// Unix timestamp in seconds since epoch
+	CreatedAt    int64  `json:"created_at,required"`
+	Name         string `json:"name,required"`
 	UploadStatus string `json:"upload_status,required"`
-	// SHA256 hash of the image file for integrity verification
+	// Any of "image".
+	Object     string `json:"object"`
 	Sha256Hash string `json:"sha256_hash,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID           respjson.Field
 		CreatedAt    respjson.Field
-		ImageID      respjson.Field
 		Name         respjson.Field
-		Object       respjson.Field
 		UploadStatus respjson.Field
+		Object       respjson.Field
 		Sha256Hash   respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
