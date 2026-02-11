@@ -79,8 +79,7 @@ func (r *VMImageListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VMImageListResponseData struct {
-	// Generated ID with format 'image\_[0-9a-zA-Z]+' used for referencing a ImageId
-	// resource.
+	// Unique identifier with prefix 'image\_'.
 	ID string `json:"id,required"`
 	// Unix timestamp in seconds since epoch
 	CreatedAt int64 `json:"created_at,required"`
