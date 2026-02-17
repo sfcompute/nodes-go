@@ -110,11 +110,11 @@ func (r *ZoneListResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type ZoneListResponseDataAvailableCapacity struct {
-	// Unix timestamp.
+	// Unix timestamp in seconds since epoch
 	EndTimestamp int64 `json:"end_timestamp,required"`
 	// The number of nodes available during this time period
 	Quantity int64 `json:"quantity,required"`
-	// Unix timestamp.
+	// Unix timestamp in seconds since epoch
 	StartTimestamp int64 `json:"start_timestamp,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -170,11 +170,11 @@ func (r *ZoneGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ZoneGetResponseAvailableCapacity struct {
-	// Unix timestamp.
+	// Unix timestamp in seconds since epoch
 	EndTimestamp int64 `json:"end_timestamp,required"`
 	// The number of nodes available during this time period
 	Quantity int64 `json:"quantity,required"`
-	// Unix timestamp.
+	// Unix timestamp in seconds since epoch
 	StartTimestamp int64 `json:"start_timestamp,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

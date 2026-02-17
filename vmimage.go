@@ -54,17 +54,19 @@ func (r *VMImageService) Get(ctx context.Context, imageID string, opts ...option
 	return
 }
 
-// Response body for listing images
 type VMImageListResponse struct {
 	Data    []VMImageListResponseData `json:"data,required"`
 	HasMore bool                      `json:"has_more,required"`
 	// Any of "list".
 	Object VMImageListResponseObject `json:"object,required"`
+	// Opaque cursor for pagination. Pass as `starting_after` to get the next page.
+	Cursor string `json:"cursor,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
 		HasMore     respjson.Field
 		Object      respjson.Field
+		Cursor      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -76,27 +78,26 @@ func (r *VMImageListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Response body for individual image info (used in lists)
 type VMImageListResponseData struct {
-	// Creation timestamp as Unix timestamp in seconds
+	// Unique identifier with prefix 'image\_'.
+	ID string `json:"id,required"`
+	// Unix timestamp in seconds since epoch
 	CreatedAt int64 `json:"created_at,required"`
-	// The image ID
-	ImageID string `json:"image_id,required"`
-	// Client given name of the image. Must be unique per account.
+	// A validated resource name. Must start with alphanumeric, followed by
+	// alphanumeric, '.', '\_', or '-'. Max 255 characters.
 	Name string `json:"name,required"`
-	// Any of "image".
-	Object string `json:"object,required"`
-	// Upload status of the image
+	// Any of "started", "uploading", "completed", "failed".
 	UploadStatus string `json:"upload_status,required"`
-	// SHA256 hash of the image file for integrity verification
+	// Any of "image".
+	Object     string `json:"object"`
 	Sha256Hash string `json:"sha256_hash,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID           respjson.Field
 		CreatedAt    respjson.Field
-		ImageID      respjson.Field
 		Name         respjson.Field
-		Object       respjson.Field
 		UploadStatus respjson.Field
+		Object       respjson.Field
 		Sha256Hash   respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -115,29 +116,16 @@ const (
 	VMImageListResponseObjectList VMImageListResponseObject = "list"
 )
 
-// Response body for image download presigned URL generation
 type VMImageGetResponse struct {
-	// The presigned URL that can be used to download the image
 	DownloadURL string `json:"download_url,required"`
-	// Timestamp when the presigned URL expires (RFC 3339 format)
-	ExpiresAt string `json:"expires_at,required"`
-	// The image ID
-	ImageID string `json:"image_id,required"`
-	// Human readable name of the image. Must be unique per account.
-	Name string `json:"name,required"`
-	// Any of "image".
-	Object VMImageGetResponseObject `json:"object,required"`
-	// Size of the image file in bytes
-	ObjectSize int64 `json:"object_size,required"`
-	// SHA256 hash of the image file for integrity verification
+	// Unix timestamp in seconds since epoch
+	ExpiresAt  int64  `json:"expires_at,required"`
+	ObjectSize int64  `json:"object_size,required"`
 	Sha256Hash string `json:"sha256_hash,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DownloadURL respjson.Field
 		ExpiresAt   respjson.Field
-		ImageID     respjson.Field
-		Name        respjson.Field
-		Object      respjson.Field
 		ObjectSize  respjson.Field
 		Sha256Hash  respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -150,9 +138,3 @@ func (r VMImageGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *VMImageGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type VMImageGetResponseObject string
-
-const (
-	VMImageGetResponseObjectImage VMImageGetResponseObject = "image"
-)

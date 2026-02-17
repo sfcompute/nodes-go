@@ -99,9 +99,9 @@ func (r *VMLogsResponseData) UnmarshalJSON(data []byte) error {
 type VmsshResponse struct {
 	SSHHostname string `json:"ssh_hostname,required"`
 	SSHPort     int64  `json:"ssh_port,required"`
-	// Unix timestamp.
+	// Unix timestamp in seconds since epoch
 	LastAttemptedKeyUpdate int64 `json:"last_attempted_key_update,nullable"`
-	// Unix timestamp.
+	// Unix timestamp in seconds since epoch
 	LastSuccessfulKeyUpdate int64                     `json:"last_successful_key_update,nullable"`
 	SSHHostKeys             []VmsshResponseSSHHostKey `json:"ssh_host_keys,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
