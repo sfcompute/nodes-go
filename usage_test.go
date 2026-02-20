@@ -24,7 +24,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	listResponseNode, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
