@@ -54,7 +54,7 @@ func (r *VMService) SSH(ctx context.Context, query VMSSHParams, opts ...option.R
 }
 
 type VMLogsResponse struct {
-	Data []VMLogsResponseData `json:"data,required"`
+	Data []VMLogsResponseData `json:"data" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -70,13 +70,13 @@ func (r *VMLogsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VMLogsResponseData struct {
-	Data                      []int64 `json:"data,required"`
-	InstanceID                string  `json:"instance_id,required"`
-	MonotonicTimestampNanoSec int64   `json:"monotonic_timestamp_nano_sec,required"`
-	MonotonicTimestampSec     int64   `json:"monotonic_timestamp_sec,required"`
+	Data                      []int64 `json:"data" api:"required"`
+	InstanceID                string  `json:"instance_id" api:"required"`
+	MonotonicTimestampNanoSec int64   `json:"monotonic_timestamp_nano_sec" api:"required"`
+	MonotonicTimestampSec     int64   `json:"monotonic_timestamp_sec" api:"required"`
 	// In RFC 3339 format
-	RealtimeTimestamp string `json:"realtime_timestamp,required"`
-	Seqnum            int64  `json:"seqnum,required"`
+	RealtimeTimestamp string `json:"realtime_timestamp" api:"required"`
+	Seqnum            int64  `json:"seqnum" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data                      respjson.Field
@@ -97,13 +97,13 @@ func (r *VMLogsResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type VmsshResponse struct {
-	SSHHostname string `json:"ssh_hostname,required"`
-	SSHPort     int64  `json:"ssh_port,required"`
+	SSHHostname string `json:"ssh_hostname" api:"required"`
+	SSHPort     int64  `json:"ssh_port" api:"required"`
 	// Unix timestamp.
-	LastAttemptedKeyUpdate int64 `json:"last_attempted_key_update,nullable"`
+	LastAttemptedKeyUpdate int64 `json:"last_attempted_key_update" api:"nullable"`
 	// Unix timestamp.
-	LastSuccessfulKeyUpdate int64                     `json:"last_successful_key_update,nullable"`
-	SSHHostKeys             []VmsshResponseSSHHostKey `json:"ssh_host_keys,nullable"`
+	LastSuccessfulKeyUpdate int64                     `json:"last_successful_key_update" api:"nullable"`
+	SSHHostKeys             []VmsshResponseSSHHostKey `json:"ssh_host_keys" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		SSHHostname             respjson.Field
@@ -123,8 +123,8 @@ func (r *VmsshResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VmsshResponseSSHHostKey struct {
-	Base64EncodedKey string `json:"base64_encoded_key,required" format:"byte"`
-	KeyType          string `json:"key_type,required"`
+	Base64EncodedKey string `json:"base64_encoded_key" api:"required" format:"byte"`
+	KeyType          string `json:"key_type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Base64EncodedKey respjson.Field
@@ -141,9 +141,9 @@ func (r *VmsshResponseSSHHostKey) UnmarshalJSON(data []byte) error {
 }
 
 type VMLogsParams struct {
-	InstanceID string `query:"instance_id,required" json:"-"`
+	InstanceID string `query:"instance_id" api:"required" json:"-"`
 	// Any of "seqnum_asc", "seqnum_desc".
-	OrderBy                 VMLogsParamsOrderBy `query:"order_by,omitzero,required" json:"-"`
+	OrderBy                 VMLogsParamsOrderBy `query:"order_by,omitzero" api:"required" json:"-"`
 	BeforeRealtimeTimestamp param.Opt[string]   `query:"before_realtime_timestamp,omitzero" json:"-"`
 	BeforeSeqnum            param.Opt[int64]    `query:"before_seqnum,omitzero" json:"-"`
 	Limit                   param.Opt[int64]    `query:"limit,omitzero" json:"-"`
@@ -168,7 +168,7 @@ const (
 )
 
 type VMSSHParams struct {
-	VMID string `query:"vm_id,required" json:"-"`
+	VMID string `query:"vm_id" api:"required" json:"-"`
 	paramObj
 }
 
