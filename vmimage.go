@@ -56,10 +56,10 @@ func (r *VMImageService) Get(ctx context.Context, imageID string, opts ...option
 
 // Response body for listing images
 type VMImageListResponse struct {
-	Data    []VMImageListResponseData `json:"data,required"`
-	HasMore bool                      `json:"has_more,required"`
+	Data    []VMImageListResponseData `json:"data" api:"required"`
+	HasMore bool                      `json:"has_more" api:"required"`
 	// Any of "list".
-	Object VMImageListResponseObject `json:"object,required"`
+	Object VMImageListResponseObject `json:"object" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -79,17 +79,17 @@ func (r *VMImageListResponse) UnmarshalJSON(data []byte) error {
 // Response body for individual image info (used in lists)
 type VMImageListResponseData struct {
 	// Creation timestamp as Unix timestamp in seconds
-	CreatedAt int64 `json:"created_at,required"`
+	CreatedAt int64 `json:"created_at" api:"required"`
 	// The image ID
-	ImageID string `json:"image_id,required"`
+	ImageID string `json:"image_id" api:"required"`
 	// Client given name of the image. Must be unique per account.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Any of "image".
-	Object string `json:"object,required"`
+	Object string `json:"object" api:"required"`
 	// Upload status of the image
-	UploadStatus string `json:"upload_status,required"`
+	UploadStatus string `json:"upload_status" api:"required"`
 	// SHA256 hash of the image file for integrity verification
-	Sha256Hash string `json:"sha256_hash,nullable"`
+	Sha256Hash string `json:"sha256_hash" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt    respjson.Field
@@ -118,19 +118,19 @@ const (
 // Response body for image download presigned URL generation
 type VMImageGetResponse struct {
 	// The presigned URL that can be used to download the image
-	DownloadURL string `json:"download_url,required"`
+	DownloadURL string `json:"download_url" api:"required"`
 	// Timestamp when the presigned URL expires (RFC 3339 format)
-	ExpiresAt string `json:"expires_at,required"`
+	ExpiresAt string `json:"expires_at" api:"required"`
 	// The image ID
-	ImageID string `json:"image_id,required"`
+	ImageID string `json:"image_id" api:"required"`
 	// Human readable name of the image. Must be unique per account.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Any of "image".
-	Object VMImageGetResponseObject `json:"object,required"`
+	Object VMImageGetResponseObject `json:"object" api:"required"`
 	// Size of the image file in bytes
-	ObjectSize int64 `json:"object_size,required"`
+	ObjectSize int64 `json:"object_size" api:"required"`
 	// SHA256 hash of the image file for integrity verification
-	Sha256Hash string `json:"sha256_hash,required"`
+	Sha256Hash string `json:"sha256_hash" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DownloadURL respjson.Field

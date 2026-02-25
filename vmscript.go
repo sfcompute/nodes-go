@@ -121,7 +121,7 @@ func (u *UserDataUnionParam) asAny() any {
 type VMScriptNewResponse struct {
 	// if the script is valid utf8 then the response may be in either string, or byte
 	// form and the client must handle both
-	Script UserDataUnion `json:"script,required"`
+	Script UserDataUnion `json:"script" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Script      respjson.Field
@@ -139,7 +139,7 @@ func (r *VMScriptNewResponse) UnmarshalJSON(data []byte) error {
 type VMScriptGetResponse struct {
 	// if the script is valid utf8 then the response may be in either string, or byte
 	// form and the client must handle both
-	Script UserDataUnion `json:"script,required"`
+	Script UserDataUnion `json:"script" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Script      respjson.Field
@@ -157,7 +157,7 @@ func (r *VMScriptGetResponse) UnmarshalJSON(data []byte) error {
 type VMScriptNewParams struct {
 	// if the script is valid utf8 then the response may be in either string, or byte
 	// form and the client must handle both
-	Script UserDataUnionParam `json:"script,omitzero,required"`
+	Script UserDataUnionParam `json:"script,omitzero" api:"required"`
 	paramObj
 }
 

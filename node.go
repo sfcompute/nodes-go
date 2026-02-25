@@ -127,9 +127,9 @@ const (
 
 // The properties DesiredCount, MaxPricePerNodeHour are required.
 type CreateNodesRequestParam struct {
-	DesiredCount int64 `json:"desired_count,required"`
+	DesiredCount int64 `json:"desired_count" api:"required"`
 	// Max price per hour for a node in cents
-	MaxPricePerNodeHour int64 `json:"max_price_per_node_hour,required"`
+	MaxPricePerNodeHour int64 `json:"max_price_per_node_hour" api:"required"`
 	// End time as Unix timestamp in seconds If provided, end time must be aligned to
 	// the hour If not provided, the node will be created as an autoreserved node
 	EndAt param.Opt[int64] `json:"end_at,omitzero"`
@@ -169,9 +169,9 @@ func (r *CreateNodesRequestParam) UnmarshalJSON(data []byte) error {
 type ExtendNodeRequestParam struct {
 	// Duration in seconds to extend the node Must be at least 1 hour (3600 seconds)
 	// and a multiple of 1 hour.
-	DurationSeconds int64 `json:"duration_seconds,required"`
+	DurationSeconds int64 `json:"duration_seconds" api:"required"`
 	// Max price per hour for the extension in cents
-	MaxPricePerNodeHour int64 `json:"max_price_per_node_hour,required"`
+	MaxPricePerNodeHour int64 `json:"max_price_per_node_hour" api:"required"`
 	paramObj
 }
 
@@ -184,8 +184,8 @@ func (r *ExtendNodeRequestParam) UnmarshalJSON(data []byte) error {
 }
 
 type ListResponseNode struct {
-	Data   []ListResponseNodeData `json:"data,required"`
-	Object string                 `json:"object,required"`
+	Data   []ListResponseNodeData `json:"data" api:"required"`
+	Object string                 `json:"object" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -202,35 +202,35 @@ func (r *ListResponseNode) UnmarshalJSON(data []byte) error {
 }
 
 type ListResponseNodeData struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Any of "H100", "H200".
-	GPUType AcceleratorType `json:"gpu_type,required"`
-	Name    string          `json:"name,required"`
+	GPUType AcceleratorType `json:"gpu_type" api:"required"`
+	Name    string          `json:"name" api:"required"`
 	// Any of "autoreserved", "reserved".
-	NodeType NodeType `json:"node_type,required"`
-	Object   string   `json:"object,required"`
-	Owner    string   `json:"owner,required"`
+	NodeType NodeType `json:"node_type" api:"required"`
+	Object   string   `json:"object" api:"required"`
+	Owner    string   `json:"owner" api:"required"`
 	// Node Status
 	//
 	// Any of "pending", "awaitingcapacity", "running", "released", "terminated",
 	// "deleted", "failed", "unknown".
-	Status Status `json:"status,required"`
+	Status Status `json:"status" api:"required"`
 	// Creation time as Unix timestamp in seconds
-	CreatedAt int64                         `json:"created_at,nullable"`
-	CurrentVM ListResponseNodeDataCurrentVM `json:"current_vm,nullable"`
+	CreatedAt int64                         `json:"created_at" api:"nullable"`
+	CurrentVM ListResponseNodeDataCurrentVM `json:"current_vm" api:"nullable"`
 	// Deletion time as Unix timestamp in seconds
-	DeletedAt int64 `json:"deleted_at,nullable"`
+	DeletedAt int64 `json:"deleted_at" api:"nullable"`
 	// End time as Unix timestamp in seconds
-	EndAt int64 `json:"end_at,nullable"`
+	EndAt int64 `json:"end_at" api:"nullable"`
 	// Max price per hour you're willing to pay for a node in cents
-	MaxPricePerNodeHour int64  `json:"max_price_per_node_hour,nullable"`
-	ProcurementID       string `json:"procurement_id,nullable"`
+	MaxPricePerNodeHour int64  `json:"max_price_per_node_hour" api:"nullable"`
+	ProcurementID       string `json:"procurement_id" api:"nullable"`
 	// Start time as Unix timestamp in seconds
-	StartAt int64 `json:"start_at,nullable"`
+	StartAt int64 `json:"start_at" api:"nullable"`
 	// Last updated time as Unix timestamp in seconds
-	UpdatedAt int64                   `json:"updated_at,nullable"`
-	VMs       ListResponseNodeDataVMs `json:"vms,nullable"`
-	Zone      string                  `json:"zone,nullable"`
+	UpdatedAt int64                   `json:"updated_at" api:"nullable"`
+	VMs       ListResponseNodeDataVMs `json:"vms" api:"nullable"`
+	Zone      string                  `json:"zone" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -262,16 +262,16 @@ func (r *ListResponseNodeData) UnmarshalJSON(data []byte) error {
 }
 
 type ListResponseNodeDataCurrentVM struct {
-	ID        string `json:"id,required"`
-	CreatedAt int64  `json:"created_at,required"`
-	EndAt     int64  `json:"end_at,required"`
-	Object    string `json:"object,required"`
-	StartAt   int64  `json:"start_at,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt int64  `json:"created_at" api:"required"`
+	EndAt     int64  `json:"end_at" api:"required"`
+	Object    string `json:"object" api:"required"`
+	StartAt   int64  `json:"start_at" api:"required"`
 	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
-	Status    string `json:"status,required"`
-	UpdatedAt int64  `json:"updated_at,required"`
-	Zone      string `json:"zone,required"`
-	ImageID   string `json:"image_id,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt int64  `json:"updated_at" api:"required"`
+	Zone      string `json:"zone" api:"required"`
+	ImageID   string `json:"image_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -295,8 +295,8 @@ func (r *ListResponseNodeDataCurrentVM) UnmarshalJSON(data []byte) error {
 }
 
 type ListResponseNodeDataVMs struct {
-	Data   []ListResponseNodeDataVMsData `json:"data,required"`
-	Object string                        `json:"object,required"`
+	Data   []ListResponseNodeDataVMsData `json:"data" api:"required"`
+	Object string                        `json:"object" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -313,16 +313,16 @@ func (r *ListResponseNodeDataVMs) UnmarshalJSON(data []byte) error {
 }
 
 type ListResponseNodeDataVMsData struct {
-	ID        string `json:"id,required"`
-	CreatedAt int64  `json:"created_at,required"`
-	EndAt     int64  `json:"end_at,required"`
-	Object    string `json:"object,required"`
-	StartAt   int64  `json:"start_at,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt int64  `json:"created_at" api:"required"`
+	EndAt     int64  `json:"end_at" api:"required"`
+	Object    string `json:"object" api:"required"`
+	StartAt   int64  `json:"start_at" api:"required"`
 	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
-	Status    string `json:"status,required"`
-	UpdatedAt int64  `json:"updated_at,required"`
-	Zone      string `json:"zone,required"`
-	ImageID   string `json:"image_id,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt int64  `json:"updated_at" api:"required"`
+	Zone      string `json:"zone" api:"required"`
+	ImageID   string `json:"image_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -346,35 +346,35 @@ func (r *ListResponseNodeDataVMsData) UnmarshalJSON(data []byte) error {
 }
 
 type Node struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Any of "H100", "H200".
-	GPUType AcceleratorType `json:"gpu_type,required"`
-	Name    string          `json:"name,required"`
+	GPUType AcceleratorType `json:"gpu_type" api:"required"`
+	Name    string          `json:"name" api:"required"`
 	// Any of "autoreserved", "reserved".
-	NodeType NodeType `json:"node_type,required"`
-	Object   string   `json:"object,required"`
-	Owner    string   `json:"owner,required"`
+	NodeType NodeType `json:"node_type" api:"required"`
+	Object   string   `json:"object" api:"required"`
+	Owner    string   `json:"owner" api:"required"`
 	// Node Status
 	//
 	// Any of "pending", "awaitingcapacity", "running", "released", "terminated",
 	// "deleted", "failed", "unknown".
-	Status Status `json:"status,required"`
+	Status Status `json:"status" api:"required"`
 	// Creation time as Unix timestamp in seconds
-	CreatedAt int64         `json:"created_at,nullable"`
-	CurrentVM NodeCurrentVM `json:"current_vm,nullable"`
+	CreatedAt int64         `json:"created_at" api:"nullable"`
+	CurrentVM NodeCurrentVM `json:"current_vm" api:"nullable"`
 	// Deletion time as Unix timestamp in seconds
-	DeletedAt int64 `json:"deleted_at,nullable"`
+	DeletedAt int64 `json:"deleted_at" api:"nullable"`
 	// End time as Unix timestamp in seconds
-	EndAt int64 `json:"end_at,nullable"`
+	EndAt int64 `json:"end_at" api:"nullable"`
 	// Max price per hour you're willing to pay for a node in cents
-	MaxPricePerNodeHour int64  `json:"max_price_per_node_hour,nullable"`
-	ProcurementID       string `json:"procurement_id,nullable"`
+	MaxPricePerNodeHour int64  `json:"max_price_per_node_hour" api:"nullable"`
+	ProcurementID       string `json:"procurement_id" api:"nullable"`
 	// Start time as Unix timestamp in seconds
-	StartAt int64 `json:"start_at,nullable"`
+	StartAt int64 `json:"start_at" api:"nullable"`
 	// Last updated time as Unix timestamp in seconds
-	UpdatedAt int64   `json:"updated_at,nullable"`
-	VMs       NodeVMs `json:"vms,nullable"`
-	Zone      string  `json:"zone,nullable"`
+	UpdatedAt int64   `json:"updated_at" api:"nullable"`
+	VMs       NodeVMs `json:"vms" api:"nullable"`
+	Zone      string  `json:"zone" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                  respjson.Field
@@ -406,16 +406,16 @@ func (r *Node) UnmarshalJSON(data []byte) error {
 }
 
 type NodeCurrentVM struct {
-	ID        string `json:"id,required"`
-	CreatedAt int64  `json:"created_at,required"`
-	EndAt     int64  `json:"end_at,required"`
-	Object    string `json:"object,required"`
-	StartAt   int64  `json:"start_at,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt int64  `json:"created_at" api:"required"`
+	EndAt     int64  `json:"end_at" api:"required"`
+	Object    string `json:"object" api:"required"`
+	StartAt   int64  `json:"start_at" api:"required"`
 	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
-	Status    string `json:"status,required"`
-	UpdatedAt int64  `json:"updated_at,required"`
-	Zone      string `json:"zone,required"`
-	ImageID   string `json:"image_id,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt int64  `json:"updated_at" api:"required"`
+	Zone      string `json:"zone" api:"required"`
+	ImageID   string `json:"image_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -439,8 +439,8 @@ func (r *NodeCurrentVM) UnmarshalJSON(data []byte) error {
 }
 
 type NodeVMs struct {
-	Data   []NodeVMsData `json:"data,required"`
-	Object string        `json:"object,required"`
+	Data   []NodeVMsData `json:"data" api:"required"`
+	Object string        `json:"object" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -457,16 +457,16 @@ func (r *NodeVMs) UnmarshalJSON(data []byte) error {
 }
 
 type NodeVMsData struct {
-	ID        string `json:"id,required"`
-	CreatedAt int64  `json:"created_at,required"`
-	EndAt     int64  `json:"end_at,required"`
-	Object    string `json:"object,required"`
-	StartAt   int64  `json:"start_at,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt int64  `json:"created_at" api:"required"`
+	EndAt     int64  `json:"end_at" api:"required"`
+	Object    string `json:"object" api:"required"`
+	StartAt   int64  `json:"start_at" api:"required"`
 	// Any of "Pending", "Running", "Destroyed", "NodeFailure", "Unspecified".
-	Status    string `json:"status,required"`
-	UpdatedAt int64  `json:"updated_at,required"`
-	Zone      string `json:"zone,required"`
-	ImageID   string `json:"image_id,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt int64  `json:"updated_at" api:"required"`
+	Zone      string `json:"zone" api:"required"`
+	ImageID   string `json:"image_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field

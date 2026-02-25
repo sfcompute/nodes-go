@@ -55,8 +55,8 @@ func (r *ZoneService) Get(ctx context.Context, id string, opts ...option.Request
 }
 
 type ZoneListResponse struct {
-	Data   []ZoneListResponseData `json:"data,required"`
-	Object string                 `json:"object,required"`
+	Data   []ZoneListResponseData `json:"data" api:"required"`
+	Object string                 `json:"object" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -75,19 +75,19 @@ func (r *ZoneListResponse) UnmarshalJSON(data []byte) error {
 type ZoneListResponseData struct {
 	// The available capacity on this cluster, in the shape of consecutive
 	// "availability rectangles".
-	AvailableCapacity []ZoneListResponseDataAvailableCapacity `json:"available_capacity,required"`
+	AvailableCapacity []ZoneListResponseDataAvailableCapacity `json:"available_capacity" api:"required"`
 	// Any of "K8s", "VM".
-	DeliveryType string `json:"delivery_type,required"`
+	DeliveryType string `json:"delivery_type" api:"required"`
 	// Any of "H100", "H200".
-	HardwareType AcceleratorType `json:"hardware_type,required"`
+	HardwareType AcceleratorType `json:"hardware_type" api:"required"`
 	// Any of "Infiniband", "None".
-	InterconnectType string `json:"interconnect_type,required"`
-	Name             string `json:"name,required"`
-	Object           string `json:"object,required"`
+	InterconnectType string `json:"interconnect_type" api:"required"`
+	Name             string `json:"name" api:"required"`
+	Object           string `json:"object" api:"required"`
 	// Any of "NorthAmerica", "AsiaPacific", "EuropeMiddleEastAfrica".
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// User-facing zone name (e.g., "Hayes Valley", "Land's End")
-	DisplayName string `json:"display_name,nullable"`
+	DisplayName string `json:"display_name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AvailableCapacity respjson.Field
@@ -111,11 +111,11 @@ func (r *ZoneListResponseData) UnmarshalJSON(data []byte) error {
 
 type ZoneListResponseDataAvailableCapacity struct {
 	// Unix timestamp.
-	EndTimestamp int64 `json:"end_timestamp,required"`
+	EndTimestamp int64 `json:"end_timestamp" api:"required"`
 	// The number of nodes available during this time period
-	Quantity int64 `json:"quantity,required"`
+	Quantity int64 `json:"quantity" api:"required"`
 	// Unix timestamp.
-	StartTimestamp int64 `json:"start_timestamp,required"`
+	StartTimestamp int64 `json:"start_timestamp" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EndTimestamp   respjson.Field
@@ -135,19 +135,19 @@ func (r *ZoneListResponseDataAvailableCapacity) UnmarshalJSON(data []byte) error
 type ZoneGetResponse struct {
 	// The available capacity on this cluster, in the shape of consecutive
 	// "availability rectangles".
-	AvailableCapacity []ZoneGetResponseAvailableCapacity `json:"available_capacity,required"`
+	AvailableCapacity []ZoneGetResponseAvailableCapacity `json:"available_capacity" api:"required"`
 	// Any of "K8s", "VM".
-	DeliveryType ZoneGetResponseDeliveryType `json:"delivery_type,required"`
+	DeliveryType ZoneGetResponseDeliveryType `json:"delivery_type" api:"required"`
 	// Any of "H100", "H200".
-	HardwareType AcceleratorType `json:"hardware_type,required"`
+	HardwareType AcceleratorType `json:"hardware_type" api:"required"`
 	// Any of "Infiniband", "None".
-	InterconnectType ZoneGetResponseInterconnectType `json:"interconnect_type,required"`
-	Name             string                          `json:"name,required"`
-	Object           string                          `json:"object,required"`
+	InterconnectType ZoneGetResponseInterconnectType `json:"interconnect_type" api:"required"`
+	Name             string                          `json:"name" api:"required"`
+	Object           string                          `json:"object" api:"required"`
 	// Any of "NorthAmerica", "AsiaPacific", "EuropeMiddleEastAfrica".
-	Region ZoneGetResponseRegion `json:"region,required"`
+	Region ZoneGetResponseRegion `json:"region" api:"required"`
 	// User-facing zone name (e.g., "Hayes Valley", "Land's End")
-	DisplayName string `json:"display_name,nullable"`
+	DisplayName string `json:"display_name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AvailableCapacity respjson.Field
@@ -171,11 +171,11 @@ func (r *ZoneGetResponse) UnmarshalJSON(data []byte) error {
 
 type ZoneGetResponseAvailableCapacity struct {
 	// Unix timestamp.
-	EndTimestamp int64 `json:"end_timestamp,required"`
+	EndTimestamp int64 `json:"end_timestamp" api:"required"`
 	// The number of nodes available during this time period
-	Quantity int64 `json:"quantity,required"`
+	Quantity int64 `json:"quantity" api:"required"`
 	// Unix timestamp.
-	StartTimestamp int64 `json:"start_timestamp,required"`
+	StartTimestamp int64 `json:"start_timestamp" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EndTimestamp   respjson.Field
