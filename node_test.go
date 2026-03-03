@@ -14,7 +14,7 @@ import (
 )
 
 func TestNodeNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -29,14 +29,16 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 	_, err := client.Nodes.New(context.TODO(), sfcnodes.NodeNewParams{
 		CreateNodesRequest: sfcnodes.CreateNodesRequestParam{
 			DesiredCount:        1,
-			MaxPricePerNodeHour: 1000,
-			Zone:                "hayesvalley",
+			MaxPricePerNodeHour: 1600,
+			AnyZone:             sfcnodes.Bool(false),
 			CloudInitUserData:   sfcnodes.String("aGVsbG8gd29ybGQ="),
 			EndAt:               sfcnodes.Int(0),
+			Forward443:          sfcnodes.Bool(false),
 			ImageID:             sfcnodes.String("vmi_1234567890abcdef"),
 			Names:               []string{"cuda-crunch"},
 			NodeType:            sfcnodes.NodeTypeAutoreserved,
 			StartAt:             sfcnodes.Int(1640995200),
+			Zone:                sfcnodes.String("hayesvalley"),
 		},
 	})
 	if err != nil {
@@ -49,7 +51,7 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 }
 
 func TestNodeListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -76,7 +78,7 @@ func TestNodeListWithOptionalParams(t *testing.T) {
 }
 
 func TestNodeDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -99,7 +101,7 @@ func TestNodeDelete(t *testing.T) {
 }
 
 func TestNodeExtend(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -131,7 +133,7 @@ func TestNodeExtend(t *testing.T) {
 }
 
 func TestNodeGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -154,7 +156,7 @@ func TestNodeGet(t *testing.T) {
 }
 
 func TestNodeRedeployWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -185,7 +187,7 @@ func TestNodeRedeployWithOptionalParams(t *testing.T) {
 }
 
 func TestNodeRelease(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

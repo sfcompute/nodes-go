@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.1.0-alpha.5 (2026-02-25)
+
+Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
+
+### Features
+
+* **api:** api update ([a0a7fa2](https://github.com/sfcompute/nodes-go/commit/a0a7fa24667407359b24deb9a6391599873cfc4e))
+* **api:** api update ([531d77e](https://github.com/sfcompute/nodes-go/commit/531d77efc30775a747cf3a96320e1a85c172fdb2))
+* **api:** api update ([dff5f7f](https://github.com/sfcompute/nodes-go/commit/dff5f7f8daf4d7f353962442bf41e2d55ff028a1))
+* **api:** api update ([ca18f27](https://github.com/sfcompute/nodes-go/commit/ca18f27daf6688518636b18a4851308dcdae0db6))
+* **api:** api update ([894995d](https://github.com/sfcompute/nodes-go/commit/894995db7b4a6347ef91fed5db242fbb14df34ef))
+* **api:** api update ([afa8e35](https://github.com/sfcompute/nodes-go/commit/afa8e35b48706ac111a768c9a7a81c59aa1602b0))
+* **api:** api update ([f77e6d0](https://github.com/sfcompute/nodes-go/commit/f77e6d07e261819f07b68b9241218f42a0ab36a1))
+* **api:** api update ([3068ae6](https://github.com/sfcompute/nodes-go/commit/3068ae6937f3d6f6f5b36f8ac7c7e318866c3ce1))
+* **api:** api update ([a4e5181](https://github.com/sfcompute/nodes-go/commit/a4e5181e44815a66b891ecd41790c9dab76c0375))
+* **api:** api update ([6a064fd](https://github.com/sfcompute/nodes-go/commit/6a064fdc947dd668159e8643e7cab0689254d4c6))
+* **api:** api update ([dd70400](https://github.com/sfcompute/nodes-go/commit/dd70400abff7e7332cf7a7f3dee59e9e2e4b61b5))
+* **client:** add a convenient param.SetJSON helper ([a7293f3](https://github.com/sfcompute/nodes-go/commit/a7293f32d7d9f676d53e6200ca7bd82f603029bb))
+* **encoder:** support bracket encoding form-data object members ([bf75f99](https://github.com/sfcompute/nodes-go/commit/bf75f99a26c353742229dabb561684545d0835c7))
+
+
+### Bug Fixes
+
+* allow canceling a request while it is waiting to retry ([b16eec0](https://github.com/sfcompute/nodes-go/commit/b16eec05809da7c51496804b92be7f79a664860a))
+* **docs:** add missing pointer prefix to api.md return types ([6dd1ead](https://github.com/sfcompute/nodes-go/commit/6dd1eadf389b5a9adf98195f624f0bba54f0b686))
+* **encoder:** correctly serialize NullStruct ([ed7b95d](https://github.com/sfcompute/nodes-go/commit/ed7b95dc7003020ff3f2738321d023ae3599e9e0))
+* **mcp:** correct code tool API endpoint ([2eeb64b](https://github.com/sfcompute/nodes-go/commit/2eeb64be8909979b8cb3524a077cb764c85a1f21))
+* rename param to avoid collision ([f221c75](https://github.com/sfcompute/nodes-go/commit/f221c7569b746c43bd46c4ab3c1615b30fc0c05c))
+* skip usage tests that don't work with Prism ([61d03bd](https://github.com/sfcompute/nodes-go/commit/61d03bd3c1f7772a74bef48676020df27c371ab1))
+
+
+### Chores
+
+* add float64 to valid types for RegisterFieldValidator ([499e663](https://github.com/sfcompute/nodes-go/commit/499e663b659fa00c013ebe3db1e0622b5e2a6a51))
+* elide duplicate aliases ([9e83189](https://github.com/sfcompute/nodes-go/commit/9e83189fd37d851e8441c313c738656a72760483))
+* **internal:** codegen related update ([44eb5d0](https://github.com/sfcompute/nodes-go/commit/44eb5d0a3f745631aebb3b0d2986a049302131fe))
+* **internal:** codegen related update ([e40a3de](https://github.com/sfcompute/nodes-go/commit/e40a3debee22efa7015e5230d14374245af79b1f))
+* **internal:** move custom custom `json` tags to `api` ([d68a748](https://github.com/sfcompute/nodes-go/commit/d68a7480dd7d4eda8fefa348d728cabf53ad671e))
+* **internal:** remove mock server code ([f28644a](https://github.com/sfcompute/nodes-go/commit/f28644aaee0119dccf2223264f06703f00567327))
+* **internal:** update `actions/checkout` version ([c853455](https://github.com/sfcompute/nodes-go/commit/c853455bd8e0c977606bc29049cfc84b2caea449))
+* update mock server docs ([588eb6a](https://github.com/sfcompute/nodes-go/commit/588eb6aca1879b14a61976f013b0155140dc1971))
+
 ## 0.1.0-alpha.4 (2025-12-01)
 
 Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
