@@ -15,6 +15,10 @@ import (
 	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
+// Zones represent physically colocated datacenters. Use these endpoints to
+// discover available zones and their capacity, hardware specifications, and
+// regional information.
+//
 // ZoneService contains methods and other services that help with interacting with
 // the sfc-nodes API.
 //

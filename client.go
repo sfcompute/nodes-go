@@ -17,9 +17,15 @@ import (
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
 	Options []option.RequestOption
-	VMs     VMService
-	Nodes   NodeService
-	Zones   ZoneService
+	// Manage your Virtual Machines.
+	VMs VMService
+	// Manage compute nodes. Create, list, extend, and release nodes for your
+	// workloads.
+	Nodes NodeService
+	// Zones represent physically colocated datacenters. Use these endpoints to
+	// discover available zones and their capacity, hardware specifications, and
+	// regional information.
+	Zones ZoneService
 }
 
 // DefaultClientOptions read from the environment (SFC_NODES_BEARER_TOKEN,

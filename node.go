@@ -20,6 +20,9 @@ import (
 	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
+// Manage compute nodes. Create, list, extend, and release nodes for your
+// workloads.
+//
 // NodeService contains methods and other services that help with interacting with
 // the sfc-nodes API.
 //
