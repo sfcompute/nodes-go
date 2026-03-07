@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-alpha.6 (2026-03-07)
+
+Full Changelog: [v0.1.0-alpha.5...v0.1.0-alpha.6](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.5...v0.1.0-alpha.6)
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([d5f51e8](https://github.com/sfcompute/nodes-go/commit/d5f51e8e5330f29e7c05a58fea234a90d3c28a86))
+* **internal:** codegen related update ([0efeaca](https://github.com/sfcompute/nodes-go/commit/0efeacad5ecdbea83c326a17bb7a2f593afdcdcb))
+* **internal:** codegen related update ([6905ec5](https://github.com/sfcompute/nodes-go/commit/6905ec5c3e4361acdbb1eda50ebcb869330c0504))
+
 ## 0.1.0-alpha.5 (2026-02-25)
 
 Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
