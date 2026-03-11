@@ -41,7 +41,7 @@ func (r *VMImageService) List(ctx context.Context, opts ...option.RequestOption)
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/vms/images"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the download URL for a VM image by ID
@@ -49,11 +49,11 @@ func (r *VMImageService) Get(ctx context.Context, imageID string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if imageID == "" {
 		err = errors.New("missing required image_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/vms/images/%s", imageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Response body for listing images
