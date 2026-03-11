@@ -38,7 +38,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
+	_, _ = client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
 	if userAgent != fmt.Sprintf("SFCNodes/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
 	}
