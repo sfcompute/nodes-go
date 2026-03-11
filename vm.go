@@ -47,14 +47,14 @@ func (r *VMService) Logs(ctx context.Context, query VMLogsParams, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/logs2"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VMService) SSH(ctx context.Context, query VMSSHParams, opts ...option.RequestOption) (res *VmsshResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/ssh"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type VMLogsResponse struct {

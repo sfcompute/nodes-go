@@ -40,14 +40,14 @@ func (r *VMScriptService) New(ctx context.Context, body VMScriptNewParams, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/script"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VMScriptService) Get(ctx context.Context, opts ...option.RequestOption) (res *VMScriptGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/script"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // UserDataUnion contains all possible properties and values from [string],
