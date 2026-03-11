@@ -16,6 +16,8 @@ import (
 	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
+// Manage your Virtual Machines.
+//
 // VMService contains methods and other services that help with interacting with
 // the sfc-nodes API.
 //
@@ -24,8 +26,10 @@ import (
 // the [NewVMService] method instead.
 type VMService struct {
 	Options []option.RequestOption
-	Script  VMScriptService
-	Images  VMImageService
+	// Manage your Virtual Machines.
+	Script VMScriptService
+	// Manage your Virtual Machines.
+	Images VMImageService
 }
 
 // NewVMService generates a new service that applies the given options to each
@@ -43,14 +47,14 @@ func (r *VMService) Logs(ctx context.Context, query VMLogsParams, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/logs2"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VMService) SSH(ctx context.Context, query VMSSHParams, opts ...option.RequestOption) (res *VmsshResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v0/vms/ssh"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type VMLogsResponse struct {

@@ -20,6 +20,9 @@ import (
 	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
+// Manage compute nodes. Create, list, extend, and release nodes for your
+// workloads.
+//
 // NodeService contains methods and other services that help with interacting with
 // the sfc-nodes API.
 //
@@ -44,7 +47,7 @@ func (r *NodeService) New(ctx context.Context, body NodeNewParams, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/nodes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all nodes for the authenticated account
@@ -52,7 +55,7 @@ func (r *NodeService) List(ctx context.Context, query NodeListParams, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/nodes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a node by id. The node cannot be deleted if it has active or pending VMs.
@@ -61,11 +64,11 @@ func (r *NodeService) Delete(ctx context.Context, id string, opts ...option.Requ
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v1/nodes/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Purchase additional time to extend the end time of a reserved VM node
@@ -73,11 +76,11 @@ func (r *NodeService) Extend(ctx context.Context, id string, body NodeExtendPara
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/nodes/%s/extend", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve details of a specific node by its ID or name
@@ -85,11 +88,11 @@ func (r *NodeService) Get(ctx context.Context, id string, opts ...option.Request
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/nodes/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Redeploy a node by replacing its current VM with a new one. Optionally update
@@ -98,11 +101,11 @@ func (r *NodeService) Redeploy(ctx context.Context, id string, body NodeRedeploy
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/nodes/%s/redeploy", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Release an auto reserved VM node from its procurement, reducing the
@@ -111,11 +114,11 @@ func (r *NodeService) Release(ctx context.Context, id string, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/nodes/%s/release", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AcceleratorType string
