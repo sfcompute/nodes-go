@@ -4,7 +4,6 @@ package sfcnodes
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -522,7 +521,7 @@ func (r NodeNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.CreateNodesRequest)
 }
 func (r *NodeNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.CreateNodesRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NodeListParams struct {
@@ -556,7 +555,7 @@ func (r NodeExtendParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.ExtendNodeRequest)
 }
 func (r *NodeExtendParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.ExtendNodeRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type NodeRedeployParams struct {
