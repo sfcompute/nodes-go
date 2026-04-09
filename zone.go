@@ -117,7 +117,7 @@ type ZoneListResponseDataAvailableCapacity struct {
 	// Unix timestamp.
 	EndTimestamp int64 `json:"end_timestamp" api:"required"`
 	// The number of nodes available during this time period
-	Quantity int64 `json:"quantity" api:"required"`
+	Quantity int64 `json:"quantity" api:"required" format:"u-int64"`
 	// Unix timestamp.
 	StartTimestamp int64 `json:"start_timestamp" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -177,7 +177,7 @@ type ZoneGetResponseAvailableCapacity struct {
 	// Unix timestamp.
 	EndTimestamp int64 `json:"end_timestamp" api:"required"`
 	// The number of nodes available during this time period
-	Quantity int64 `json:"quantity" api:"required"`
+	Quantity int64 `json:"quantity" api:"required" format:"u-int64"`
 	// Unix timestamp.
 	StartTimestamp int64 `json:"start_timestamp" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

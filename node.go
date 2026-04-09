@@ -129,7 +129,7 @@ const (
 
 // The properties DesiredCount, MaxPricePerNodeHour are required.
 type CreateNodesRequestParam struct {
-	DesiredCount int64 `json:"desired_count" api:"required"`
+	DesiredCount int64 `json:"desired_count" api:"required" format:"u-int32"`
 	// Max price per hour for a node in cents
 	MaxPricePerNodeHour int64 `json:"max_price_per_node_hour" api:"required"`
 	// End time as Unix timestamp in seconds If provided, end time must be aligned to

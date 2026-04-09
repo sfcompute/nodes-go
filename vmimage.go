@@ -130,7 +130,7 @@ type VMImageGetResponse struct {
 	// Any of "image".
 	Object VMImageGetResponseObject `json:"object" api:"required"`
 	// Size of the image file in bytes
-	ObjectSize int64 `json:"object_size" api:"required"`
+	ObjectSize int64 `json:"object_size" api:"required" format:"u-int64"`
 	// SHA256 hash of the image file for integrity verification
 	Sha256Hash string `json:"sha256_hash" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
