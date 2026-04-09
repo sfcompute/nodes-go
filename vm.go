@@ -74,13 +74,13 @@ func (r *VMLogsResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VMLogsResponseData struct {
-	Data                      []int64 `json:"data" api:"required"`
+	Data                      []int64 `json:"data" api:"required" format:"u-int8"`
 	InstanceID                string  `json:"instance_id" api:"required"`
-	MonotonicTimestampNanoSec int64   `json:"monotonic_timestamp_nano_sec" api:"required"`
-	MonotonicTimestampSec     int64   `json:"monotonic_timestamp_sec" api:"required"`
+	MonotonicTimestampNanoSec int64   `json:"monotonic_timestamp_nano_sec" api:"required" format:"u-int32"`
+	MonotonicTimestampSec     int64   `json:"monotonic_timestamp_sec" api:"required" format:"u-int64"`
 	// In RFC 3339 format
 	RealtimeTimestamp string `json:"realtime_timestamp" api:"required"`
-	Seqnum            int64  `json:"seqnum" api:"required"`
+	Seqnum            int64  `json:"seqnum" api:"required" format:"u-int64"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data                      respjson.Field
@@ -102,7 +102,7 @@ func (r *VMLogsResponseData) UnmarshalJSON(data []byte) error {
 
 type VmsshResponse struct {
 	SSHHostname string `json:"ssh_hostname" api:"required"`
-	SSHPort     int64  `json:"ssh_port" api:"required"`
+	SSHPort     int64  `json:"ssh_port" api:"required" format:"u-int16"`
 	// Unix timestamp.
 	LastAttemptedKeyUpdate int64 `json:"last_attempted_key_update" api:"nullable"`
 	// Unix timestamp.
@@ -149,10 +149,10 @@ type VMLogsParams struct {
 	// Any of "seqnum_asc", "seqnum_desc".
 	OrderBy                 VMLogsParamsOrderBy `query:"order_by,omitzero" api:"required" json:"-"`
 	BeforeRealtimeTimestamp param.Opt[string]   `query:"before_realtime_timestamp,omitzero" json:"-"`
-	BeforeSeqnum            param.Opt[int64]    `query:"before_seqnum,omitzero" json:"-"`
-	Limit                   param.Opt[int64]    `query:"limit,omitzero" json:"-"`
+	BeforeSeqnum            param.Opt[int64]    `query:"before_seqnum,omitzero" format:"u-int64" json:"-"`
+	Limit                   param.Opt[int64]    `query:"limit,omitzero" format:"u-int64" json:"-"`
 	SinceRealtimeTimestamp  param.Opt[string]   `query:"since_realtime_timestamp,omitzero" json:"-"`
-	SinceSeqnum             param.Opt[int64]    `query:"since_seqnum,omitzero" json:"-"`
+	SinceSeqnum             param.Opt[int64]    `query:"since_seqnum,omitzero" format:"u-int64" json:"-"`
 	paramObj
 }
 
