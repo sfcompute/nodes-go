@@ -28,18 +28,18 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Nodes.New(context.TODO(), sfcnodes.NodeNewParams{
 		CreateNodesRequest: sfcnodes.CreateNodesRequestParam{
-			DesiredCount:        1,
-			MaxPricePerNodeHour: 1600,
-			AnyZone:             sfcnodes.Bool(false),
-			CloudInitUserData:   sfcnodes.String("aGVsbG8gd29ybGQ="),
-			EnableInfiniband:    sfcnodes.Bool(false),
-			EndAt:               sfcnodes.Int(0),
-			Forward443:          sfcnodes.Bool(false),
-			ImageID:             sfcnodes.String("image_1234567890abcdef"),
-			Names:               []string{"cuda-crunch"},
-			NodeType:            sfcnodes.NodeTypeAutoreserved,
-			StartAt:             sfcnodes.Int(1640995200),
-			Zone:                sfcnodes.String("hayesvalley"),
+			DesiredCount:            1,
+			MaxPricePerNodeHour:     1600,
+			PreviewEnableInfiniband: sfcnodes.Bool(false),
+			AnyZone:                 sfcnodes.Bool(false),
+			CloudInitUserData:       sfcnodes.String("aGVsbG8gd29ybGQ="),
+			EndAt:                   sfcnodes.Int(0),
+			Forward443:              sfcnodes.Bool(false),
+			ImageID:                 sfcnodes.String("image_1234567890abcdef"),
+			Names:                   []string{"cuda-crunch"},
+			NodeType:                sfcnodes.NodeTypeAutoreserved,
+			StartAt:                 sfcnodes.Int(1640995200),
+			Zone:                    sfcnodes.String("hayesvalley"),
 		},
 	})
 	if err != nil {
