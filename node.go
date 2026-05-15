@@ -140,6 +140,9 @@ type CreateNodesRequestParam struct {
 	// User script to be executed during the VM's boot process Data should be base64
 	// encoded
 	CloudInitUserData param.Opt[string] `json:"cloud_init_user_data,omitzero" format:"byte"`
+	// **Experimental — subject to change or removal without notice.** Enables
+	// InfiniBand. Requires hardware in the chosen zone that supports InfiniBand.
+	EnableInfiniband param.Opt[bool] `json:"enable_infiniband,omitzero"`
 	// (Optional) If set, enables forwarding to the VM on port 443.
 	Forward443 param.Opt[bool] `json:"forward_443,omitzero"`
 	// Custom image ID to use for the VM instances
@@ -151,7 +154,7 @@ type CreateNodesRequestParam struct {
 	// false.
 	Zone param.Opt[string] `json:"zone,omitzero"`
 	// Custom node names Names cannot begin with 'vm*' or 'n*' as this is reserved for
-	// system-generated IDs Names cannot be numeric strings Names cannot exceed 128
+	// system-generated IDs Names cannot be numeric strings Names cannot exceed 256
 	// characters
 	Names []string `json:"names,omitzero"`
 	// Any of "autoreserved", "reserved".

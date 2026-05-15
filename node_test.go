@@ -32,9 +32,10 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 			MaxPricePerNodeHour: 1600,
 			AnyZone:             sfcnodes.Bool(false),
 			CloudInitUserData:   sfcnodes.String("aGVsbG8gd29ybGQ="),
+			EnableInfiniband:    sfcnodes.Bool(false),
 			EndAt:               sfcnodes.Int(0),
 			Forward443:          sfcnodes.Bool(false),
-			ImageID:             sfcnodes.String("vmi_1234567890abcdef"),
+			ImageID:             sfcnodes.String("image_1234567890abcdef"),
 			Names:               []string{"cuda-crunch"},
 			NodeType:            sfcnodes.NodeTypeAutoreserved,
 			StartAt:             sfcnodes.Int(1640995200),
@@ -173,7 +174,7 @@ func TestNodeRedeployWithOptionalParams(t *testing.T) {
 		"id",
 		sfcnodes.NodeRedeployParams{
 			CloudInitUserData: sfcnodes.String("aGVsbG8gd29ybGQ="),
-			ImageID:           sfcnodes.String("vmi_1234567890abcdef"),
+			ImageID:           sfcnodes.String("image_1234567890abcdef"),
 			OverrideEmpty:     sfcnodes.Bool(true),
 		},
 	)
