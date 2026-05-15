@@ -135,14 +135,14 @@ type CreateNodesRequestParam struct {
 	// End time as Unix timestamp in seconds If provided, end time must be aligned to
 	// the hour If not provided, the node will be created as an autoreserved node
 	EndAt param.Opt[int64] `json:"end_at,omitzero"`
+	// **Experimental — subject to change or removal without notice.** Enables
+	// InfiniBand. Requires hardware in the chosen zone that supports InfiniBand.
+	PreviewEnableInfiniband param.Opt[bool] `json:"_preview_enable_infiniband,omitzero"`
 	// Allow auto reserved nodes to be created in any zone that meets the requirements
 	AnyZone param.Opt[bool] `json:"any_zone,omitzero"`
 	// User script to be executed during the VM's boot process Data should be base64
 	// encoded
 	CloudInitUserData param.Opt[string] `json:"cloud_init_user_data,omitzero" format:"byte"`
-	// **Experimental — subject to change or removal without notice.** Enables
-	// InfiniBand. Requires hardware in the chosen zone that supports InfiniBand.
-	EnableInfiniband param.Opt[bool] `json:"enable_infiniband,omitzero"`
 	// (Optional) If set, enables forwarding to the VM on port 443.
 	Forward443 param.Opt[bool] `json:"forward_443,omitzero"`
 	// Custom image ID to use for the VM instances
