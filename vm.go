@@ -28,6 +28,7 @@ type VMService struct {
 	Options []option.RequestOption
 	// Manage your Virtual Machines.
 	Script VMScriptService
+	// Custom machine images for instances.
 	Images VMImageService
 }
 
