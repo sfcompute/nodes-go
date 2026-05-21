@@ -16,6 +16,7 @@ import (
 	"github.com/sfcompute/nodes-go/option"
 	"github.com/sfcompute/nodes-go/packages/param"
 	"github.com/sfcompute/nodes-go/packages/respjson"
+	"github.com/sfcompute/nodes-go/shared/constant"
 )
 
 // Custom machine images for instances.
@@ -69,9 +70,8 @@ func (r *VMImageService) Get(ctx context.Context, id string, opts ...option.Requ
 type VMImageListResponse struct {
 	Data    []VMImageListResponseData `json:"data" api:"required"`
 	HasMore bool                      `json:"has_more" api:"required"`
-	// Any of "list".
-	Object VMImageListResponseObject `json:"object" api:"required"`
-	Cursor string                    `json:"cursor" api:"nullable"`
+	Object  constant.List             `json:"object" default:"list"`
+	Cursor  string                    `json:"cursor" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -92,11 +92,10 @@ func (r *VMImageListResponse) UnmarshalJSON(data []byte) error {
 type VMImageListResponseData struct {
 	ID string `json:"id" api:"required"`
 	// Unix timestamp.
-	CreatedAt int64  `json:"created_at" api:"required"`
-	Name      string `json:"name" api:"required"`
-	// Any of "image".
-	Object string `json:"object" api:"required"`
-	Owner  string `json:"owner" api:"required"`
+	CreatedAt int64          `json:"created_at" api:"required"`
+	Name      string         `json:"name" api:"required"`
+	Object    constant.Image `json:"object" default:"image"`
+	Owner     string         `json:"owner" api:"required"`
 	// A resource path for a image resource. Format:
 	// sfc:image:<account>:<workspace>:<name>.
 	ResourcePath string `json:"resource_path" api:"required"`
@@ -128,20 +127,13 @@ func (r *VMImageListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VMImageListResponseObject string
-
-const (
-	VMImageListResponseObjectList VMImageListResponseObject = "list"
-)
-
 type VMImageGetResponse struct {
 	ID string `json:"id" api:"required"`
 	// Unix timestamp.
-	CreatedAt int64  `json:"created_at" api:"required"`
-	Name      string `json:"name" api:"required"`
-	// Any of "image".
-	Object VMImageGetResponseObject `json:"object" api:"required"`
-	Owner  string                   `json:"owner" api:"required"`
+	CreatedAt int64          `json:"created_at" api:"required"`
+	Name      string         `json:"name" api:"required"`
+	Object    constant.Image `json:"object" default:"image"`
+	Owner     string         `json:"owner" api:"required"`
 	// A resource path for a image resource. Format:
 	// sfc:image:<account>:<workspace>:<name>.
 	ResourcePath string `json:"resource_path" api:"required"`
@@ -172,12 +164,6 @@ func (r VMImageGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *VMImageGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type VMImageGetResponseObject string
-
-const (
-	VMImageGetResponseObjectImage VMImageGetResponseObject = "image"
-)
 
 type VMImageGetResponseUploadStatus string
 
