@@ -18,8 +18,7 @@ import (
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
 	Options []option.RequestOption
-	// Manage your Virtual Machines.
-	VMs VMService
+	VMs     VMService
 	// Manage compute nodes. Create, list, extend, and release nodes for your
 	// workloads.
 	Nodes NodeService

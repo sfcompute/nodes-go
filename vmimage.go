@@ -46,7 +46,6 @@ func NewVMImageService(opts ...option.RequestOption) (r VMImageService) {
 // the workspace to list sfc-provided public images instead.
 func (r *VMImageService) List(ctx context.Context, query VMImageListParams, opts ...option.RequestOption) (res *VMImageListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.sfcompute.com/")}, opts...)
 	path := "preview/v2/images"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -57,7 +56,6 @@ func (r *VMImageService) List(ctx context.Context, query VMImageListParams, opts
 // Retrieve an image by ID. Returns both user-owned and public images.
 func (r *VMImageService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VMImageGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithBaseURL("https://api.sfcompute.com/")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -90,30 +88,38 @@ func (r *VMImageListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VMImageListResponseData struct {
+	// Accepts the canonical prefix below; additional legacy prefixes are aliased for
+	// read compatibility. Writes always emit the canonical form.
 	ID string `json:"id" api:"required"`
 	// Unix timestamp.
-	CreatedAt int64          `json:"created_at" api:"required"`
-	Name      string         `json:"name" api:"required"`
-	Object    constant.Image `json:"object" default:"image"`
-	Owner     string         `json:"owner" api:"required"`
+	CreatedAt int64 `json:"created_at" api:"required"`
+	// Whether this is an sfc-provided public image.
+	IsPublic bool           `json:"is_public" api:"required"`
+	Name     string         `json:"name" api:"required"`
+	Object   constant.Image `json:"object" default:"image"`
+	Owner    string         `json:"owner" api:"required"`
 	// A resource path for a image resource. Format:
 	// sfc:image:<account>:<workspace>:<name>.
 	ResourcePath string `json:"resource_path" api:"required"`
 	// Any of "started", "uploading", "completed", "failed", "revoked".
 	UploadStatus string `json:"upload_status" api:"required"`
 	Workspace    string `json:"workspace" api:"required"`
-	Provider     string `json:"provider" api:"nullable"`
-	Sha256       string `json:"sha256" api:"nullable"`
+	// The workspace that owns this image.
+	WorkspaceID string `json:"workspace_id" api:"required"`
+	Provider    string `json:"provider" api:"nullable"`
+	Sha256      string `json:"sha256" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		CreatedAt    respjson.Field
+		IsPublic     respjson.Field
 		Name         respjson.Field
 		Object       respjson.Field
 		Owner        respjson.Field
 		ResourcePath respjson.Field
 		UploadStatus respjson.Field
 		Workspace    respjson.Field
+		WorkspaceID  respjson.Field
 		Provider     respjson.Field
 		Sha256       respjson.Field
 		ExtraFields  map[string]respjson.Field
@@ -128,30 +134,38 @@ func (r *VMImageListResponseData) UnmarshalJSON(data []byte) error {
 }
 
 type VMImageGetResponse struct {
+	// Accepts the canonical prefix below; additional legacy prefixes are aliased for
+	// read compatibility. Writes always emit the canonical form.
 	ID string `json:"id" api:"required"`
 	// Unix timestamp.
-	CreatedAt int64          `json:"created_at" api:"required"`
-	Name      string         `json:"name" api:"required"`
-	Object    constant.Image `json:"object" default:"image"`
-	Owner     string         `json:"owner" api:"required"`
+	CreatedAt int64 `json:"created_at" api:"required"`
+	// Whether this is an sfc-provided public image.
+	IsPublic bool           `json:"is_public" api:"required"`
+	Name     string         `json:"name" api:"required"`
+	Object   constant.Image `json:"object" default:"image"`
+	Owner    string         `json:"owner" api:"required"`
 	// A resource path for a image resource. Format:
 	// sfc:image:<account>:<workspace>:<name>.
 	ResourcePath string `json:"resource_path" api:"required"`
 	// Any of "started", "uploading", "completed", "failed", "revoked".
 	UploadStatus VMImageGetResponseUploadStatus `json:"upload_status" api:"required"`
 	Workspace    string                         `json:"workspace" api:"required"`
-	Provider     string                         `json:"provider" api:"nullable"`
-	Sha256       string                         `json:"sha256" api:"nullable"`
+	// The workspace that owns this image.
+	WorkspaceID string `json:"workspace_id" api:"required"`
+	Provider    string `json:"provider" api:"nullable"`
+	Sha256      string `json:"sha256" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		CreatedAt    respjson.Field
+		IsPublic     respjson.Field
 		Name         respjson.Field
 		Object       respjson.Field
 		Owner        respjson.Field
 		ResourcePath respjson.Field
 		UploadStatus respjson.Field
 		Workspace    respjson.Field
+		WorkspaceID  respjson.Field
 		Provider     respjson.Field
 		Sha256       respjson.Field
 		ExtraFields  map[string]respjson.Field
