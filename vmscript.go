@@ -15,8 +15,6 @@ import (
 	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
-// Manage your Virtual Machines.
-//
 // VMScriptService contains methods and other services that help with interacting
 // with the sfc-nodes API.
 //

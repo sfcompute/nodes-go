@@ -16,8 +16,6 @@ import (
 	"github.com/sfcompute/nodes-go/packages/respjson"
 )
 
-// Manage your Virtual Machines.
-//
 // VMService contains methods and other services that help with interacting with
 // the sfc-nodes API.
 //
@@ -26,8 +24,7 @@ import (
 // the [NewVMService] method instead.
 type VMService struct {
 	Options []option.RequestOption
-	// Manage your Virtual Machines.
-	Script VMScriptService
+	Script  VMScriptService
 	// Custom machine images for instances.
 	Images VMImageService
 }
