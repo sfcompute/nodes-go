@@ -138,7 +138,10 @@ type CreateNodesRequestParam struct {
 	// **Experimental — subject to change or removal without notice.** Enables
 	// InfiniBand. Requires hardware in the chosen zone that supports InfiniBand.
 	PreviewEnableInfiniband param.Opt[bool] `json:"_preview_enable_infiniband,omitzero"`
-	// Allow auto reserved nodes to be created in any zone that meets the requirements
+	// Deprecated: no longer supported. Requests with `any_zone: true` are rejected;
+	// specify a zone instead.
+	//
+	// Deprecated: deprecated
 	AnyZone param.Opt[bool] `json:"any_zone,omitzero"`
 	// User script to be executed during the VM's boot process Data should be base64
 	// encoded
@@ -150,8 +153,7 @@ type CreateNodesRequestParam struct {
 	// Start time as Unix timestamp in seconds Optional for reserved nodes. If not
 	// provided, defaults to now
 	StartAt param.Opt[int64] `json:"start_at,omitzero"`
-	// Zone to create the nodes in. Required for auto reserved nodes if any_zone is
-	// false.
+	// Zone to create the nodes in. Required for reserved and auto reserved nodes.
 	Zone param.Opt[string] `json:"zone,omitzero"`
 	// Custom node names Names cannot begin with 'vm*' or 'n*' as this is reserved for
 	// system-generated IDs Names cannot be numeric strings Names cannot exceed 256
