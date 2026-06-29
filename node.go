@@ -41,12 +41,15 @@ func NewNodeService(opts ...option.RequestOption) (r NodeService) {
 	return
 }
 
-// Create VM nodes
-func (r *NodeService) New(ctx context.Context, body NodeNewParams, opts ...option.RequestOption) (res *ListResponseNode, err error) {
+// Nodes are deprecated. See https://docs.sfcompute.com for the latest version of
+// our product. You can migrate existing nodes using `sf nodes migrate` in the new
+// CLI. This endpoint always returns `410 Gone`.
+func (r *NodeService) New(ctx context.Context, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/nodes"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
+	return err
 }
 
 // List all nodes for the authenticated account
@@ -126,51 +129,6 @@ const (
 	AcceleratorTypeH100 AcceleratorType = "H100"
 	AcceleratorTypeH200 AcceleratorType = "H200"
 )
-
-// The properties DesiredCount, MaxPricePerNodeHour are required.
-type CreateNodesRequestParam struct {
-	DesiredCount int64 `json:"desired_count" api:"required" format:"u-int32"`
-	// Max price per hour for a node in cents
-	MaxPricePerNodeHour int64 `json:"max_price_per_node_hour" api:"required"`
-	// End time as Unix timestamp in seconds If provided, end time must be aligned to
-	// the hour If not provided, the node will be created as an autoreserved node
-	EndAt param.Opt[int64] `json:"end_at,omitzero"`
-	// **Experimental — subject to change or removal without notice.** Enables
-	// InfiniBand. Requires hardware in the chosen zone that supports InfiniBand.
-	PreviewEnableInfiniband param.Opt[bool] `json:"_preview_enable_infiniband,omitzero"`
-	// Deprecated: no longer supported. Requests with `any_zone: true` are rejected;
-	// specify a zone instead.
-	//
-	// Deprecated: deprecated
-	AnyZone param.Opt[bool] `json:"any_zone,omitzero"`
-	// User script to be executed during the VM's boot process Data should be base64
-	// encoded
-	CloudInitUserData param.Opt[string] `json:"cloud_init_user_data,omitzero" format:"byte"`
-	// (Optional) If set, enables forwarding to the VM on port 443.
-	Forward443 param.Opt[bool] `json:"forward_443,omitzero"`
-	// Custom image ID to use for the VM instances
-	ImageID param.Opt[string] `json:"image_id,omitzero"`
-	// Start time as Unix timestamp in seconds Optional for reserved nodes. If not
-	// provided, defaults to now
-	StartAt param.Opt[int64] `json:"start_at,omitzero"`
-	// Zone to create the nodes in. Required for reserved and auto reserved nodes.
-	Zone param.Opt[string] `json:"zone,omitzero"`
-	// Custom node names Names cannot begin with 'vm*' or 'n*' as this is reserved for
-	// system-generated IDs Names cannot be numeric strings Names cannot exceed 256
-	// characters
-	Names []string `json:"names,omitzero"`
-	// Any of "autoreserved", "reserved".
-	NodeType NodeType `json:"node_type,omitzero"`
-	paramObj
-}
-
-func (r CreateNodesRequestParam) MarshalJSON() (data []byte, err error) {
-	type shadow CreateNodesRequestParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *CreateNodesRequestParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 // The properties DurationSeconds, MaxPricePerNodeHour are required.
 type ExtendNodeRequestParam struct {
@@ -516,18 +474,6 @@ const (
 	StatusFailed           Status = "failed"
 	StatusUnknown          Status = "unknown"
 )
-
-type NodeNewParams struct {
-	CreateNodesRequest CreateNodesRequestParam
-	paramObj
-}
-
-func (r NodeNewParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.CreateNodesRequest)
-}
-func (r *NodeNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type NodeListParams struct {
 	// Filter nodes by node_id Use ?id=n_b1dc52505c6db142&id=n_b1dc52505c6db133 to

@@ -13,7 +13,7 @@ import (
 	"github.com/sfcompute/nodes-go/option"
 )
 
-func TestNodeNewWithOptionalParams(t *testing.T) {
+func TestNodeNew(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,22 +26,7 @@ func TestNodeNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.Nodes.New(context.TODO(), sfcnodes.NodeNewParams{
-		CreateNodesRequest: sfcnodes.CreateNodesRequestParam{
-			DesiredCount:            1,
-			MaxPricePerNodeHour:     1600,
-			PreviewEnableInfiniband: sfcnodes.Bool(false),
-			AnyZone:                 sfcnodes.Bool(false),
-			CloudInitUserData:       sfcnodes.String("aGVsbG8gd29ybGQ="),
-			EndAt:                   sfcnodes.Int(0),
-			Forward443:              sfcnodes.Bool(false),
-			ImageID:                 sfcnodes.String("image_1234567890abcdef"),
-			Names:                   []string{"cuda-crunch"},
-			NodeType:                sfcnodes.NodeTypeAutoreserved,
-			StartAt:                 sfcnodes.Int(1640995200),
-			Zone:                    sfcnodes.String("hayesvalley"),
-		},
-	})
+	err := client.Nodes.New(context.TODO())
 	if err != nil {
 		var apierr *sfcnodes.Error
 		if errors.As(err, &apierr) {
