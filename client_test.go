@@ -38,7 +38,9 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	_, _ = client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
+	_, _ = client.VMs.Images.List(context.Background(), sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	})
 	if userAgent != fmt.Sprintf("SFCNodes/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
 	}
@@ -62,7 +64,9 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
+	_, err := client.VMs.Images.List(context.Background(), sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -97,7 +101,9 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	_, err := client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
+	_, err := client.VMs.Images.List(context.Background(), sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -127,7 +133,9 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	_, err := client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
+	_, err := client.VMs.Images.List(context.Background(), sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -156,7 +164,9 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Nodes.List(context.Background(), sfcnodes.NodeListParams{})
+	_, err := client.VMs.Images.List(context.Background(), sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -179,7 +189,9 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	_, err := client.Nodes.List(cancelCtx, sfcnodes.NodeListParams{})
+	_, err := client.VMs.Images.List(cancelCtx, sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -199,7 +211,9 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	_, err := client.Nodes.List(cancelCtx, sfcnodes.NodeListParams{})
+	_, err := client.VMs.Images.List(cancelCtx, sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	})
 	if err == nil {
 		t.Error("expected there to be a cancel error")
 	}
@@ -225,7 +239,9 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		_, err := client.Nodes.List(deadlineCtx, sfcnodes.NodeListParams{})
+		_, err := client.VMs.Images.List(deadlineCtx, sfcnodes.VMImageListParams{
+			Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+		})
 		if err == nil {
 			t.Error("expected there to be a deadline error")
 		}
