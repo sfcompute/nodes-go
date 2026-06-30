@@ -25,9 +25,11 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	listResponseNode, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
+	images, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", listResponseNode.Data)
+	t.Logf("%+v\n", images.Data)
 }

@@ -56,11 +56,13 @@ func main() {
 	client := sfcnodes.NewClient(
 		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("SFC_NODES_BEARER_TOKEN")
 	)
-	listResponseNode, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
+	images, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", listResponseNode.Data)
+	fmt.Printf("%+v\n", images.Data)
 }
 
 ```
@@ -266,7 +268,7 @@ client := sfcnodes.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Nodes.List(context.TODO(), ...,
+client.VMs.Images.List(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -297,14 +299,16 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
+_, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{
+	Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+})
 if err != nil {
 	var apierr *sfcnodes.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/v1/nodes": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/preview/v2/images": 400 Bad Request { ... }
 }
 ```
 
@@ -322,9 +326,11 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Nodes.List(
+client.VMs.Images.List(
 	ctx,
-	sfcnodes.NodeListParams{},
+	sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -358,9 +364,11 @@ client := sfcnodes.NewClient(
 )
 
 // Override per-request:
-client.Nodes.List(
+client.VMs.Images.List(
 	context.TODO(),
-	sfcnodes.NodeListParams{},
+	sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	},
 	option.WithMaxRetries(5),
 )
 ```
@@ -373,15 +381,17 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-listResponseNode, err := client.Nodes.List(
+images, err := client.VMs.Images.List(
 	context.TODO(),
-	sfcnodes.NodeListParams{},
+	sfcnodes.VMImageListParams{
+		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
+	},
 	option.WithResponseInto(&response),
 )
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", listResponseNode)
+fmt.Printf("%+v\n", images)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
