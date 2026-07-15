@@ -56,9 +56,7 @@ func main() {
 	client := sfcnodes.NewClient(
 		option.WithBearerToken("My Bearer Token"), // defaults to os.LookupEnv("SFC_NODES_BEARER_TOKEN")
 	)
-	images, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{
-		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
-	})
+	images, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{})
 	if err != nil {
 		panic(err.Error())
 	}
@@ -299,9 +297,7 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{
-	Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
-})
+_, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{})
 if err != nil {
 	var apierr *sfcnodes.Error
 	if errors.As(err, &apierr) {
@@ -328,9 +324,7 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.VMs.Images.List(
 	ctx,
-	sfcnodes.VMImageListParams{
-		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
-	},
+	sfcnodes.VMImageListParams{},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -366,9 +360,7 @@ client := sfcnodes.NewClient(
 // Override per-request:
 client.VMs.Images.List(
 	context.TODO(),
-	sfcnodes.VMImageListParams{
-		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
-	},
+	sfcnodes.VMImageListParams{},
 	option.WithMaxRetries(5),
 )
 ```
@@ -383,9 +375,7 @@ you need to examine response headers, status codes, or other details.
 var response *http.Response
 images, err := client.VMs.Images.List(
 	context.TODO(),
-	sfcnodes.VMImageListParams{
-		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
-	},
+	sfcnodes.VMImageListParams{},
 	option.WithResponseInto(&response),
 )
 if err != nil {

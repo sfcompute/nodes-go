@@ -27,11 +27,11 @@ func TestVMImageListWithOptionalParams(t *testing.T) {
 		option.WithBearerToken("My Bearer Token"),
 	)
 	_, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{
-		Workspace:     "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
 		ID:            []string{"image_k3R-nX9vLm7Qp2Yw5Jd8F"},
 		EndingBefore:  sfcnodes.String("imagec_gqXR7s0Kj5mHvE2wNpLc4Q"),
 		Limit:         sfcnodes.Int(1),
 		StartingAfter: sfcnodes.String("imagec_gqXR7s0Kj5mHvE2wNpLc4Q"),
+		Workspace:     sfcnodes.String("wksp_k3R-nX9vLm7Qp2Yw5Jd8F"),
 	})
 	if err != nil {
 		var apierr *sfcnodes.Error
