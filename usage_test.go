@@ -25,9 +25,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	images, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{
-		Workspace: "wksp_k3R-nX9vLm7Qp2Yw5Jd8F",
-	})
+	images, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
