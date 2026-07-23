@@ -196,10 +196,11 @@ type VMImageListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" format:"u-int32" json:"-"`
 	// Cursor for forward pagination (from a previous response's `cursor` field).
 	StartingAfter param.Opt[string] `query:"starting_after,omitzero" json:"-"`
-	// Scope the returned list to a single workspace (ID, resource path, or name). Pass
-	// `sfc:workspace:sfcompute:public` to list sfc-provided public images. Without it,
-	// the returned list spans every workspace the caller has requisite permissions on
-	// (public images are not included — request them via the public workspace).
+	// Scope the returned list to a single workspace (ID, resource path, or name).
+	// Without it, the returned list spans every workspace where the caller has
+	// `Image:List` and `Image:Read` (granted at either the workspace or organization
+	// level). Public images are not included by default - request them by specifying
+	// `sfc:workspace:sfcompute:public` for the `workspace` query parameter.
 	Workspace param.Opt[string] `query:"workspace,omitzero" json:"-"`
 	// Filter by image ID (repeatable).
 	ID []string `query:"id,omitzero" json:"-"`
