@@ -210,6 +210,11 @@ const (
 )
 
 type VMImageListParams struct {
+	// Return every version of every image name. By default the list collapses to one
+	// entry per name — the highest active (completed, non-deprecated) version, falling
+	// back to the name's latest version when no active one exists. Public listings
+	// hide names whose every version is deprecated unless this is set.
+	AllVersions param.Opt[bool] `query:"all_versions,omitzero" json:"-"`
 	// Cursor for backward pagination.
 	EndingBefore param.Opt[string] `query:"ending_before,omitzero" json:"-"`
 	// Maximum number of results to return (1-200, default 50).

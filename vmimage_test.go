@@ -28,6 +28,7 @@ func TestVMImageListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{
 		ID:            []string{"image_k3R-nX9vLm7Qp2Yw5Jd8F"},
+		AllVersions:   sfcnodes.Bool(true),
 		EndingBefore:  sfcnodes.String("imagec_gqXR7s0Kj5mHvE2wNpLc4Q"),
 		Limit:         sfcnodes.Int(1),
 		StartingAfter: sfcnodes.String("imagec_gqXR7s0Kj5mHvE2wNpLc4Q"),
