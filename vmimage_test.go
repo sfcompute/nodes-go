@@ -55,7 +55,7 @@ func TestVMImageGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.VMs.Images.Get(context.TODO(), "image_k3R-nX9vLm7Qp2Yw5Jd8F")
+	_, err := client.VMs.Images.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *sfcnodes.Error
 		if errors.As(err, &apierr) {
