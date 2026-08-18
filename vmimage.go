@@ -53,7 +53,9 @@ func (r *VMImageService) List(ctx context.Context, query VMImageListParams, opts
 
 // > ⚠️ This endpoint is in [public preview](/preview/roadmap#feature-states).
 //
-// Retrieve an image by ID. Returns both user-owned and public images.
+// Retrieve an image by ID. Returns both user-owned and public images. Resource
+// paths follow the latest active version of the name; append `@<version>` to
+// address one exact version (e.g. `sfc:image:sfcompute:public:ubuntu-22.04@2`).
 func (r *VMImageService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VMImageGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
