@@ -106,8 +106,15 @@ type VMImageListResponseData struct {
 	Workspace    string `json:"workspace" api:"required"`
 	// The workspace that owns this image.
 	WorkspaceID string `json:"workspace_id" api:"required"`
-	Provider    string `json:"provider" api:"nullable"`
-	Sha256      string `json:"sha256" api:"nullable"`
+	// Set when this version is deprecated: it no longer resolves by name and is hidden
+	// from default listings, but can still be launched by id.
+	DeprecatedAt int64  `json:"deprecated_at" api:"nullable"`
+	Provider     string `json:"provider" api:"nullable"`
+	Sha256       string `json:"sha256" api:"nullable"`
+	// Version of this image within its name. Uploading an existing name creates the
+	// next version; each version is immutable. (`default` tolerates servers that
+	// predate the field: 0 = unreported.)
+	Version int64 `json:"version"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -120,8 +127,10 @@ type VMImageListResponseData struct {
 		UploadStatus respjson.Field
 		Workspace    respjson.Field
 		WorkspaceID  respjson.Field
+		DeprecatedAt respjson.Field
 		Provider     respjson.Field
 		Sha256       respjson.Field
+		Version      respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -152,8 +161,15 @@ type VMImageGetResponse struct {
 	Workspace    string                         `json:"workspace" api:"required"`
 	// The workspace that owns this image.
 	WorkspaceID string `json:"workspace_id" api:"required"`
-	Provider    string `json:"provider" api:"nullable"`
-	Sha256      string `json:"sha256" api:"nullable"`
+	// Set when this version is deprecated: it no longer resolves by name and is hidden
+	// from default listings, but can still be launched by id.
+	DeprecatedAt int64  `json:"deprecated_at" api:"nullable"`
+	Provider     string `json:"provider" api:"nullable"`
+	Sha256       string `json:"sha256" api:"nullable"`
+	// Version of this image within its name. Uploading an existing name creates the
+	// next version; each version is immutable. (`default` tolerates servers that
+	// predate the field: 0 = unreported.)
+	Version int64 `json:"version"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -166,8 +182,10 @@ type VMImageGetResponse struct {
 		UploadStatus respjson.Field
 		Workspace    respjson.Field
 		WorkspaceID  respjson.Field
+		DeprecatedAt respjson.Field
 		Provider     respjson.Field
 		Sha256       respjson.Field
+		Version      respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
