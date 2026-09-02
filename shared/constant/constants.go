@@ -18,6 +18,15 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
+type Image string // Always "image"
+type List string  // Always "list"
+
+func (c Image) Default() Image { return "image" }
+func (c List) Default() List   { return "list" }
+
+func (c Image) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c List) MarshalJSON() ([]byte, error)  { return marshalString(c) }
+
 type constant[T any] interface {
 	Constant[T]
 	*T

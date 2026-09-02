@@ -7,14 +7,20 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 
 	"github.com/sfcompute/nodes-go/internal/apijson"
+	"github.com/sfcompute/nodes-go/internal/apiquery"
 	"github.com/sfcompute/nodes-go/internal/requestconfig"
 	"github.com/sfcompute/nodes-go/option"
+	"github.com/sfcompute/nodes-go/packages/param"
 	"github.com/sfcompute/nodes-go/packages/respjson"
+	"github.com/sfcompute/nodes-go/shared/constant"
 )
 
+// Custom machine images for instances.
+//
 // VMImageService contains methods and other services that help with interacting
 // with the sfc-nodes API.
 //
@@ -34,37 +40,44 @@ func NewVMImageService(opts ...option.RequestOption) (r VMImageService) {
 	return
 }
 
-// List all VM Images for the authenticated account
-func (r *VMImageService) List(ctx context.Context, opts ...option.RequestOption) (res *VMImageListResponse, err error) {
+// > ⚠️ This endpoint is in [public preview](/preview/roadmap#feature-states).
+//
+// List images in the specified workspace. Pass `sfc:workspace:sfcompute:public` as
+// the workspace to list sfc-provided public images instead.
+func (r *VMImageService) List(ctx context.Context, query VMImageListParams, opts ...option.RequestOption) (res *VMImageListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v1/vms/images"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	path := "preview/v2/images"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
 }
 
-// Get the download URL for a VM image by ID
-func (r *VMImageService) Get(ctx context.Context, imageID string, opts ...option.RequestOption) (res *VMImageGetResponse, err error) {
+// > ⚠️ This endpoint is in [public preview](/preview/roadmap#feature-states).
+//
+// Retrieve an image by ID. Returns both user-owned and public images. Resource
+// paths follow the latest active version of the name; append `@<version>` to
+// address one exact version (e.g. `sfc:image:sfcompute:public:ubuntu-22.04@2`).
+func (r *VMImageService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VMImageGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	if imageID == "" {
-		err = errors.New("missing required image_id parameter")
-		return
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
 	}
-	path := fmt.Sprintf("v1/vms/images/%s", imageID)
+	path := fmt.Sprintf("preview/v2/images/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
-// Response body for listing images
 type VMImageListResponse struct {
 	Data    []VMImageListResponseData `json:"data" api:"required"`
 	HasMore bool                      `json:"has_more" api:"required"`
-	// Any of "list".
-	Object VMImageListResponseObject `json:"object" api:"required"`
+	Object  constant.List             `json:"object" default:"list"`
+	Cursor  string                    `json:"cursor" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
 		HasMore     respjson.Field
 		Object      respjson.Field
+		Cursor      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -76,28 +89,50 @@ func (r *VMImageListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Response body for individual image info (used in lists)
 type VMImageListResponseData struct {
-	// Creation timestamp as Unix timestamp in seconds
+	// Accepts the canonical prefix below; additional legacy prefixes are aliased for
+	// read compatibility. Writes always emit the canonical form.
+	ID string `json:"id" api:"required"`
+	// Unix timestamp.
 	CreatedAt int64 `json:"created_at" api:"required"`
-	// The image ID
-	ImageID string `json:"image_id" api:"required"`
-	// Client given name of the image. Must be unique per account.
-	Name string `json:"name" api:"required"`
-	// Any of "image".
-	Object string `json:"object" api:"required"`
-	// Upload status of the image
+	// Whether this is an sfc-provided public image.
+	IsPublic bool           `json:"is_public" api:"required"`
+	Name     string         `json:"name" api:"required"`
+	Object   constant.Image `json:"object" default:"image"`
+	Owner    string         `json:"owner" api:"required"`
+	// A resource path for a image resource. Format:
+	// sfc:image:<account>:<workspace>:<name>.
+	ResourcePath string `json:"resource_path" api:"required"`
+	// Any of "started", "uploading", "completed", "failed", "revoked".
 	UploadStatus string `json:"upload_status" api:"required"`
-	// SHA256 hash of the image file for integrity verification
-	Sha256Hash string `json:"sha256_hash" api:"nullable"`
+	Workspace    string `json:"workspace" api:"required"`
+	// The workspace that owns this image.
+	WorkspaceID string `json:"workspace_id" api:"required"`
+	// Set when this version is deprecated: it no longer resolves by name and is hidden
+	// from default listings, but can still be launched by id.
+	DeprecatedAt int64  `json:"deprecated_at" api:"nullable"`
+	Provider     string `json:"provider" api:"nullable"`
+	Sha256       string `json:"sha256" api:"nullable"`
+	// Version of this image within its name. Uploading an existing name creates the
+	// next version; each version is immutable. (`default` tolerates servers that
+	// predate the field: 0 = unreported.)
+	Version int64 `json:"version"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID           respjson.Field
 		CreatedAt    respjson.Field
-		ImageID      respjson.Field
+		IsPublic     respjson.Field
 		Name         respjson.Field
 		Object       respjson.Field
+		Owner        respjson.Field
+		ResourcePath respjson.Field
 		UploadStatus respjson.Field
-		Sha256Hash   respjson.Field
+		Workspace    respjson.Field
+		WorkspaceID  respjson.Field
+		DeprecatedAt respjson.Field
+		Provider     respjson.Field
+		Sha256       respjson.Field
+		Version      respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -109,39 +144,52 @@ func (r *VMImageListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VMImageListResponseObject string
-
-const (
-	VMImageListResponseObjectList VMImageListResponseObject = "list"
-)
-
-// Response body for image download presigned URL generation
 type VMImageGetResponse struct {
-	// The presigned URL that can be used to download the image
-	DownloadURL string `json:"download_url" api:"required"`
-	// Timestamp when the presigned URL expires (RFC 3339 format)
-	ExpiresAt string `json:"expires_at" api:"required"`
-	// The image ID
-	ImageID string `json:"image_id" api:"required"`
-	// Human readable name of the image. Must be unique per account.
-	Name string `json:"name" api:"required"`
-	// Any of "image".
-	Object VMImageGetResponseObject `json:"object" api:"required"`
-	// Size of the image file in bytes
-	ObjectSize int64 `json:"object_size" api:"required"`
-	// SHA256 hash of the image file for integrity verification
-	Sha256Hash string `json:"sha256_hash" api:"required"`
+	// Accepts the canonical prefix below; additional legacy prefixes are aliased for
+	// read compatibility. Writes always emit the canonical form.
+	ID string `json:"id" api:"required"`
+	// Unix timestamp.
+	CreatedAt int64 `json:"created_at" api:"required"`
+	// Whether this is an sfc-provided public image.
+	IsPublic bool           `json:"is_public" api:"required"`
+	Name     string         `json:"name" api:"required"`
+	Object   constant.Image `json:"object" default:"image"`
+	Owner    string         `json:"owner" api:"required"`
+	// A resource path for a image resource. Format:
+	// sfc:image:<account>:<workspace>:<name>.
+	ResourcePath string `json:"resource_path" api:"required"`
+	// Any of "started", "uploading", "completed", "failed", "revoked".
+	UploadStatus VMImageGetResponseUploadStatus `json:"upload_status" api:"required"`
+	Workspace    string                         `json:"workspace" api:"required"`
+	// The workspace that owns this image.
+	WorkspaceID string `json:"workspace_id" api:"required"`
+	// Set when this version is deprecated: it no longer resolves by name and is hidden
+	// from default listings, but can still be launched by id.
+	DeprecatedAt int64  `json:"deprecated_at" api:"nullable"`
+	Provider     string `json:"provider" api:"nullable"`
+	Sha256       string `json:"sha256" api:"nullable"`
+	// Version of this image within its name. Uploading an existing name creates the
+	// next version; each version is immutable. (`default` tolerates servers that
+	// predate the field: 0 = unreported.)
+	Version int64 `json:"version"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		DownloadURL respjson.Field
-		ExpiresAt   respjson.Field
-		ImageID     respjson.Field
-		Name        respjson.Field
-		Object      respjson.Field
-		ObjectSize  respjson.Field
-		Sha256Hash  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		IsPublic     respjson.Field
+		Name         respjson.Field
+		Object       respjson.Field
+		Owner        respjson.Field
+		ResourcePath respjson.Field
+		UploadStatus respjson.Field
+		Workspace    respjson.Field
+		WorkspaceID  respjson.Field
+		DeprecatedAt respjson.Field
+		Provider     respjson.Field
+		Sha256       respjson.Field
+		Version      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -151,8 +199,43 @@ func (r *VMImageGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VMImageGetResponseObject string
+type VMImageGetResponseUploadStatus string
 
 const (
-	VMImageGetResponseObjectImage VMImageGetResponseObject = "image"
+	VMImageGetResponseUploadStatusStarted   VMImageGetResponseUploadStatus = "started"
+	VMImageGetResponseUploadStatusUploading VMImageGetResponseUploadStatus = "uploading"
+	VMImageGetResponseUploadStatusCompleted VMImageGetResponseUploadStatus = "completed"
+	VMImageGetResponseUploadStatusFailed    VMImageGetResponseUploadStatus = "failed"
+	VMImageGetResponseUploadStatusRevoked   VMImageGetResponseUploadStatus = "revoked"
 )
+
+type VMImageListParams struct {
+	// Return every version of every image name. By default the list collapses to one
+	// entry per name — the highest active (completed, non-deprecated) version, falling
+	// back to the name's latest version when no active one exists. Public listings
+	// hide names whose every version is deprecated unless this is set.
+	AllVersions param.Opt[bool] `query:"all_versions,omitzero" json:"-"`
+	// Cursor for backward pagination.
+	EndingBefore param.Opt[string] `query:"ending_before,omitzero" json:"-"`
+	// Maximum number of results to return (1-200, default 50).
+	Limit param.Opt[int64] `query:"limit,omitzero" format:"u-int32" json:"-"`
+	// Cursor for forward pagination (from a previous response's `cursor` field).
+	StartingAfter param.Opt[string] `query:"starting_after,omitzero" json:"-"`
+	// Scope the returned list to a single workspace (ID, resource path, or name).
+	// Without it, the returned list spans every workspace where the caller has
+	// `Image:List` and `Image:Read` (granted at either the workspace or organization
+	// level). Public images are not included by default - request them by specifying
+	// `sfc:workspace:sfcompute:public` for the `workspace` query parameter.
+	Workspace param.Opt[string] `query:"workspace,omitzero" json:"-"`
+	// Filter by image ID (repeatable).
+	ID []string `query:"id,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [VMImageListParams]'s query parameters as `url.Values`.
+func (r VMImageListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}

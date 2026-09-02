@@ -1,5 +1,61 @@
 # Changelog
 
+## 0.1.0-alpha.6 (2026-09-02)
+
+Full Changelog: [v0.1.0-alpha.5...v0.1.0-alpha.6](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.5...v0.1.0-alpha.6)
+
+### Features
+
+* **api:** api update ([70b1ef5](https://github.com/sfcompute/nodes-go/commit/70b1ef549bbcd7ce7509af3651213d4c3ae1173c))
+* **api:** api update ([d5661f4](https://github.com/sfcompute/nodes-go/commit/d5661f4c88ecfaeb14c02bbd4875dd124727317f))
+* **api:** api update ([ae026a2](https://github.com/sfcompute/nodes-go/commit/ae026a2223a052bd1ee4c1b82cba772f6c5fb465))
+* **api:** api update ([e3e81a8](https://github.com/sfcompute/nodes-go/commit/e3e81a871faa2a26d367ed8c90ffc18993bf1b60))
+* **api:** api update ([a05fc6b](https://github.com/sfcompute/nodes-go/commit/a05fc6bf9a8bd6f5d84d1fada717f3eadb63c2c3))
+* **api:** api update ([510c275](https://github.com/sfcompute/nodes-go/commit/510c275c7fc09a93c3725a62d1c8a8bc7b03247a))
+* **api:** api update ([8d84967](https://github.com/sfcompute/nodes-go/commit/8d84967e055d00f63918ba7aa6507d508c5195cd))
+* **api:** api update ([3a3ece1](https://github.com/sfcompute/nodes-go/commit/3a3ece13628cf493ef152ce10ddd108307d3bfdc))
+* **api:** api update ([afd2178](https://github.com/sfcompute/nodes-go/commit/afd21788395f75b15c2c58dda4b61266c6c9e5a5))
+* **api:** api update ([72ee288](https://github.com/sfcompute/nodes-go/commit/72ee288f4d79e0508f8b01065e4bee4e4ee2d9a7))
+* **api:** api update ([5c53052](https://github.com/sfcompute/nodes-go/commit/5c530522281441ba93e17b182dcde27e30fb43cc))
+* **api:** api update ([8594097](https://github.com/sfcompute/nodes-go/commit/85940976fa7a1fad13d0ee62e4325f7b17a2bfb2))
+* **api:** api update ([eb93c6d](https://github.com/sfcompute/nodes-go/commit/eb93c6dcb89945517c8d3e506d80bec1531a8fbd))
+* **api:** api update ([0ae17e1](https://github.com/sfcompute/nodes-go/commit/0ae17e1a7c4894100cf2bc6c3a8098eba4e17e35))
+* **api:** update config to account for breaking changes ([bca26e2](https://github.com/sfcompute/nodes-go/commit/bca26e229a3a6120f77df90f693989b54d26a7b1))
+* **client:** optimize json encoder for internal types ([77a27ee](https://github.com/sfcompute/nodes-go/commit/77a27ee3287988b67c53a7a08111b91a5e08d2de))
+* **go:** add default http client with timeout ([e8e7fff](https://github.com/sfcompute/nodes-go/commit/e8e7fff59aeb8bcd5b44703b55c59665e47dde46))
+* **internal:** support comma format in multipart form encoding ([ecfc0ce](https://github.com/sfcompute/nodes-go/commit/ecfc0ceb5a993acb87fc73731ba19c0e24349ea9))
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([db22310](https://github.com/sfcompute/nodes-go/commit/db22310b9a93c44dcb4142a7d44c248b503569d1))
+* support setting headers via env ([c14c4ea](https://github.com/sfcompute/nodes-go/commit/c14c4ead498de87c9cc80bba147fbc6f285d64a4))
+
+
+### Bug Fixes
+
+* better respect format tags from the spec ([0b4c0ec](https://github.com/sfcompute/nodes-go/commit/0b4c0ecae518042d6ceecb8525718fb141e3e1c8))
+* fix issue with unmarshaling in some cases ([fa94f5f](https://github.com/sfcompute/nodes-go/commit/fa94f5f06356b76992a572891c762c3fe3559dc0))
+* **go:** avoid panic when http.DefaultTransport is wrapped ([57cc619](https://github.com/sfcompute/nodes-go/commit/57cc619fd65be59bbf0d85a3f25a3a9c1a07843a))
+* prevent duplicate ? in query params ([179abd8](https://github.com/sfcompute/nodes-go/commit/179abd873e3776a78b5f465b2878981f684c0001))
+
+
+### Chores
+
+* avoid embedding reflect.Type for dead code elimination ([851e07b](https://github.com/sfcompute/nodes-go/commit/851e07b60b7b90623fb34c9d8e947677806c55ae))
+* **ci:** skip lint on metadata-only changes ([59072fa](https://github.com/sfcompute/nodes-go/commit/59072fa7b6eda168b36e5702c27e85cd99ab84cc))
+* **ci:** skip uploading artifacts on stainless-internal branches ([d5f51e8](https://github.com/sfcompute/nodes-go/commit/d5f51e8e5330f29e7c05a58fea234a90d3c28a86))
+* **ci:** support opting out of skipping builds on metadata-only commits ([046b6e1](https://github.com/sfcompute/nodes-go/commit/046b6e1a7cb29da1c78c90944644f50e5629f304))
+* **client:** fix multipart serialisation of Default() fields ([68d8f8e](https://github.com/sfcompute/nodes-go/commit/68d8f8e87b235485f65c079a52cd3c381d9936be))
+* **internal:** codegen related update ([0efeaca](https://github.com/sfcompute/nodes-go/commit/0efeacad5ecdbea83c326a17bb7a2f593afdcdcb))
+* **internal:** codegen related update ([6905ec5](https://github.com/sfcompute/nodes-go/commit/6905ec5c3e4361acdbb1eda50ebcb869330c0504))
+* **internal:** minor cleanup ([d4332e4](https://github.com/sfcompute/nodes-go/commit/d4332e4aeae3e5a569fc586ab430182cb705de17))
+* **internal:** more robust bootstrap script ([1aad79a](https://github.com/sfcompute/nodes-go/commit/1aad79aad4eb6f35fc6a72077c7f4f4ac2299ba4))
+* **internal:** support default value struct tag ([9be56ed](https://github.com/sfcompute/nodes-go/commit/9be56edd00c8e78ee7d3cd56604eeebe63df376b))
+* **internal:** tweak CI branches ([f1ab274](https://github.com/sfcompute/nodes-go/commit/f1ab27477b86808c8942b6ce899803ac150c8b16))
+* **internal:** update gitignore ([c997311](https://github.com/sfcompute/nodes-go/commit/c9973115ba8dcfb4eb10f7cab9c438c7729779fb))
+* **internal:** use explicit returns ([f740ed8](https://github.com/sfcompute/nodes-go/commit/f740ed8beb5a3e52d0c879e31a9ed47f85af233d))
+* **internal:** use explicit returns in more places ([f8f3570](https://github.com/sfcompute/nodes-go/commit/f8f3570dcb58aaecc9139b4bf4e93c1a77f4a711))
+* redact api-key headers in debug logs ([ce03df6](https://github.com/sfcompute/nodes-go/commit/ce03df6b12d63a0711fd15049397c4e6f69c4071))
+* remove unnecessary error check for url parsing ([9a31c22](https://github.com/sfcompute/nodes-go/commit/9a31c22ba410290e150a66b0f7bec72c9ae131be))
+* update docs for api:"required" ([afd6c27](https://github.com/sfcompute/nodes-go/commit/afd6c27ac6b3ae51794c4098293b9f1a676cf2a2))
+
 ## 0.1.0-alpha.5 (2026-02-25)
 
 Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/sfcompute/nodes-go/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
