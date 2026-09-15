@@ -13,7 +13,7 @@ import (
 	"github.com/sfcompute/nodes-go/option"
 )
 
-func TestVMImageList(t *testing.T) {
+func TestVMImageListWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,14 @@ func TestVMImageList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.VMs.Images.List(context.TODO())
+	_, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{
+		ID:            []string{"image_k3R-nX9vLm7Qp2Yw5Jd8F"},
+		AllVersions:   sfcnodes.Bool(true),
+		EndingBefore:  sfcnodes.String("imagec_gqXR7s0Kj5mHvE2wNpLc4Q"),
+		Limit:         sfcnodes.Int(1),
+		StartingAfter: sfcnodes.String("imagec_gqXR7s0Kj5mHvE2wNpLc4Q"),
+		Workspace:     sfcnodes.String("wksp_k3R-nX9vLm7Qp2Yw5Jd8F"),
+	})
 	if err != nil {
 		var apierr *sfcnodes.Error
 		if errors.As(err, &apierr) {
@@ -49,7 +56,7 @@ func TestVMImageGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	_, err := client.VMs.Images.Get(context.TODO(), "image_id")
+	_, err := client.VMs.Images.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *sfcnodes.Error
 		if errors.As(err, &apierr) {

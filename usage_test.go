@@ -13,6 +13,7 @@ import (
 )
 
 func TestUsage(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -24,10 +25,9 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithBearerToken("My Bearer Token"),
 	)
-	t.Skip("Mock server tests are disabled")
-	listResponseNode, err := client.Nodes.List(context.TODO(), sfcnodes.NodeListParams{})
+	images, err := client.VMs.Images.List(context.TODO(), sfcnodes.VMImageListParams{})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", listResponseNode.Data)
+	t.Logf("%+v\n", images.Data)
 }
